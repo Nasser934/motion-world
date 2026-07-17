@@ -1,0 +1,70 @@
+name: Bootstrap Motion World
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".bootstrap/**"
+      - ".github/workflows/bootstrap.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore repository source
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cat .bootstrap/source.part* | base64 --decode > /tmp/motion-world.tar.gz
+          mkdir -p /tmp/motion-world
+          tar -xzf /tmp/motion-world.tar.gz -C /tmp/motion-world
+          rsync -a --exclude='.git/' /tmp/motion-world/motion-world/ ./
+
+      - name: Install media dependencies
+        run: |
+          python3 -m pip install --disable-pip-version-check Pillow jsonschema
+
+      - name: Generate README video and images
+        shell: bash
+        run: |
+          set -euxo pipefail
+          python3 scripts/render_readme_demo.py --out docs/media
+          rm -rf docs/media/demo-frames
+          python3 skills/motion-world/scripts/prepare_motion.py \
+            --input docs/media/motion-world-demo.mp4 \
+            --out docs/media/demo-package \
+            --profiles scrub,frames,atlas,posters \
+            --fps 12 \
+            --frame-count 24 \
+            --gop 4 \
+            --crf 22 \
+            --frame-width 320 \
+            --atlas-columns 6 \
+            --atlas-max-frames 24
+          cp docs/media/demo-package/posters/start.webp docs/media/demo-start.webp
+          cp docs/media/demo-package/posters/middle.webp docs/media/demo-middle.webp
+          cp docs/media/demo-package/posters/end.webp docs/media/demo-end.webp
+          cp docs/media/demo-package/atlas/atlas_000.png docs/media/demo-atlas.png
+
+      - name: Verify repository
+        run: bash scripts/verify.sh
+
+      - name: Commit public release
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf .bootstrap
+          rm -f .github/workflows/bootstrap.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish Motion World 0.3.0" || exit 0
+          git push
