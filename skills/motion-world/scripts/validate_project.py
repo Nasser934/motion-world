@@ -34,6 +34,7 @@ def main() -> int:
         "auto_router",
         "higgsfield_cli",
         "krea_mcp",
+        "krea_manual",
         "dreamina_manual",
         "vidu_manual",
         "vidu_api",
@@ -54,6 +55,24 @@ def main() -> int:
     paid_policy = policy.get("paidPolicy", "ask")
     if paid_policy not in {"never", "ask", "yes"}:
         fail("providerPolicy.paidPolicy must be never, ask, or yes")
+
+    allowed_states = {
+        None,
+        "PROVIDER_DISCOVERY",
+        "PROVIDER_AUTH_REQUIRED",
+        "PROVIDER_FREE_BALANCE_AVAILABLE",
+        "PROVIDER_PAID_APPROVAL_REQUIRED",
+        "PROVIDER_MODEL_UNAVAILABLE",
+        "MANUAL_PROVIDER_REQUIRED",
+        "PROVIDER_VIDEO_RECEIVED",
+        "PROVIDER_VIDEO_REJECTED",
+        "DIAGNOSTIC_PREVIEW_ONLY",
+        "PRODUCTION_ASSETS_GENERATED",
+        "INTEGRATION_VERIFIED",
+    }
+    state = data.get("generationState")
+    if state not in allowed_states:
+        fail(f"unsupported generationState: {state}")
 
     canvas_ids = {c.get("id") for c in data.get("canvases", [])}
     clip_ids = set()
@@ -95,7 +114,8 @@ def main() -> int:
         fail(f"unsupported driver: {driver}")
 
     print(
-        f'OK: {path} ({len(clip_ids)} clip(s), {len(data["runtimes"])} runtime(s), provider={provider_type})'
+        f'OK: {path} ({len(clip_ids)} clip(s), {len(data["runtimes"])} runtime(s), '
+        f'provider={provider_type}, state={state or "unspecified"})'
     )
     return 0
 

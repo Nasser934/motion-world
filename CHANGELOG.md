@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 — 2026-07-17
+
+- Added `create_manual_handoff.py` to produce a complete manual-provider kit with source images, detailed copy-paste prompts, official Krea/Dreamina/Vidu links, exact settings, and expected MP4 filenames.
+- Added `provider_runner.py --handoff` and made manual provider planning create the handoff kit automatically.
+- Requires direct user-visible links to every returned MP4; a video hidden inside a ZIP no longer counts as delivered.
+- Blocks local crossfade/interpolation from being executed as production output unless `--allow-diagnostic` is explicitly supplied.
+- Prevents large frames/atlas/runtime packages from being generated before the real provider MP4 returns.
+- Added the `MANUAL_PROVIDER_REQUIRED` state and Krea manual provider route.
+
 ## 0.4.0 — 2026-07-17
 
 - Added a beginner-first provider question and automatic capability-based routing.
