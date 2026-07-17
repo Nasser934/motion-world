@@ -1,0 +1,15 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "motion-world",
+  "description": "Generate stills, animate them with any video provider, and package controllable motion for native apps and the web.",
+  "owner": {"name": "Nasser934"},
+  "plugins": [
+    {
+      "name": "motion-world",
+      "source": "./",
+      "skills": ["./skills/motion-world"],
+      "description": "Provider-agnostic image-to-video-to-app motion pipeline with time, count, scroll, gesture, sensor, and state drivers.",
+      "category": "design"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "0.2",
+  "project": {
+    "id": "generic-growth",
+    "name": "Generic Growth Scene",
+    "description": "A seed grows into a complete garden. This example is not tied to any product.",
+    "direction": "auto",
+    "stylePreamble": "Soft cinematic miniature scene, fixed camera, consistent subject identity, calm natural motion, no text.",
+    "license": "Project-specific assets"
+  },
+  "canvases": [
+    {
+      "id": "mobile",
+      "width": 1080,
+      "height": 1920,
+      "safeArea": {
+        "top": 160,
+        "bottom": 180,
+        "left": 72,
+        "right": 72
+      }
+    },
+    {
+      "id": "desktop",
+      "width": 1920,
+      "height": 1080,
+      "safeArea": {
+        "top": 80,
+        "bottom": 80,
+        "left": 120,
+        "right": 120
+      }
+    }
+  ],
+  "imageProvider": {
+    "type": "chatgpt_image_gen",
+    "model": "agent-default",
+    "config": {
+      "outputDirectory": "assets/source-images"
+    }
+  },
+  "videoProvider": {
+    "type": "higgsfield_cli",
+    "model": "seedance_2_0",
+    "config": {
+      "wait": true,
+      "inspectModelSchema": true
+    }
+  },
+  "clips": [
+    {
+      "id": "growth-mobile",
+      "startImage": "assets/source-images/growth-start-mobile.png",
+      "endImage": "assets/source-images/growth-end-mobile.png",
+      "referenceImages": [],
+      "promptFile": "prompts/growth-motion.txt",
+      "canvas": "mobile",
+      "durationSeconds": 8,
+      "model": "seedance_2_0",
+      "output": "provider-output/growth-mobile.mp4",
+      "connector": false
+    }
+  ],
+  "processing": {
+    "profiles": [
+      "scrub",
+      "frames",
+      "atlas",
+      "posters"
+    ],
+    "fps": 30,
+    "frameCount": 180,
+    "scrub": {
+      "gop": 4,
+      "crf": 20
+    },
+    "frames": {
+      "format": "webp",
+      "quality": 82
+    },
+    "atlas": {
+      "columns": 10,
+      "maxFramesPerAtlas": 100
+    }
+  },
+  "driver": {
+    "type": "custom",
+    "config": {
+      "contract": "normalized 0...1"
+    }
+  },
+  "runtimes": [
+    {
+      "platform": "ios_swiftui",
+      "mode": "frames",
+      "outputDirectory": "runtime/ios"
+    },
+    {
+      "platform": "android_compose",
+      "mode": "frames",
+      "outputDirectory": "runtime/android"
+    },
+    {
+      "platform": "flutter",
+      "mode": "frames",
+      "outputDirectory": "runtime/flutter"
+    },
+    {
+      "platform": "react_native",
+      "mode": "frames",
+      "outputDirectory": "runtime/react-native"
+    },
+    {
+      "platform": "web",
+      "mode": "scrub_video",
+      "outputDirectory": "runtime/web"
+    }
+  ],
+  "reducedMotion": {
+    "mode": "checkpoints",
+    "progressValues": [
+      0,
+      0.5,
+      1
+    ]
+  },
+  "provenance": []
+}

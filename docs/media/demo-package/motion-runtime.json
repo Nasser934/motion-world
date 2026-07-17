@@ -1,0 +1,54 @@
+{
+  "source": "/home/runner/work/motion-world/motion-world/docs/media/motion-world-demo.mp4",
+  "sourceSha256": "ecceddcd803ed00b62e9edd6e5b87d17bd0bc575abfaf1944ecd9f9058e26449",
+  "profiles": [
+    "atlas",
+    "frames",
+    "posters",
+    "scrub"
+  ],
+  "fps": 12.0,
+  "frameCount": 24,
+  "outputs": {
+    "scrubMp4": {
+      "path": "scrub/master.mp4",
+      "sha256": "b481b29009a438cb101679e46353016ea5215ad702414f699dcd8679261de10c"
+    },
+    "frames": {
+      "directory": "frames",
+      "pattern": "frame_%04d.webp",
+      "count": 24
+    },
+    "atlas": {
+      "directory": "atlas",
+      "manifest": "atlas/atlas.json"
+    },
+    "posterStart": {
+      "path": "posters/start.webp",
+      "sha256": "34153f6a8c399dd7934811b5cf659f0d6cbadf7379a2f675f5788bff39d4c71c"
+    },
+    "posterMiddle": {
+      "path": "posters/middle.webp",
+      "sha256": "fe4b55544ba376607e87fc572ff36399ab454e0fde76656f5191786bb80a39b8"
+    },
+    "posterEnd": {
+      "path": "posters/end.webp",
+      "sha256": "766744c5cf6cfd756921867be2ff887e7a6a5ef6f9a55b324739bf26d03b7c46"
+    }
+  },
+  "probe": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "width": 1280,
+        "height": 720,
+        "pix_fmt": "yuv420p",
+        "r_frame_rate": "30/1"
+      }
+    ],
+    "format": {
+      "duration": "6.000000"
+    }
+  }
+}

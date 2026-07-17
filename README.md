@@ -1,537 +1,945 @@
 <p align="center">
-  <img src="docs/media/hero.svg" width="100%" alt="Motion World — generated visuals into controllable application motion">
+  <img src="docs/media/hero.svg" alt="Motion World — generated images to controllable application motion" width="100%" />
 </p>
 
 <p align="center">
-  <strong>Generate the visuals once. Drive the motion from anything.</strong><br>
-  Turn images from ChatGPT, Codex, or any image model into video with Higgsfield or another provider, then package that video as progress-controlled motion for iOS, Android, Flutter, React Native, and the web.
+  <a href="README_AR.md">العربية</a> ·
+  <a href="#60-second-start">60-second start</a> ·
+  <a href="#how-the-pipeline-works">Pipeline</a> ·
+  <a href="#runtime-integration">Runtime integration</a> ·
+  <a href="docs/GUIDE_AR.md">Arabic guide</a> ·
+  <a href="docs/PUBLISH_AR.md">Publish to GitHub</a>
 </p>
 
 <p align="center">
-  <a href="#quick-start"><img alt="Quick start" src="https://img.shields.io/badge/Quick_Start-5_minutes-171717?style=for-the-badge"></a>
-  <a href="skills/motion-world/SKILL.md"><img alt="Agent skill" src="https://img.shields.io/badge/Agent_Skill-SKILL.md-7057ff?style=for-the-badge"></a>
-  <a href="README_AR.md"><img alt="Arabic guide" src="https://img.shields.io/badge/العربية-الدليل_العربي-0f766e?style=for-the-badge"></a>
-  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/License-MIT-2563eb?style=for-the-badge"></a>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.3.0-7659F4?style=flat-square" />
+  <a href="https://github.com/Nasser934/motion-world/actions/workflows/verify.yml"><img alt="Verify" src="https://img.shields.io/github/actions/workflow/status/Nasser934/motion-world/verify.yml?branch=main&style=flat-square&label=verify" /></a>
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-63E6BE?style=flat-square" />
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="FFmpeg" src="https://img.shields.io/badge/FFmpeg-required-007808?style=flat-square&logo=ffmpeg&logoColor=white" />
+  <img alt="Platforms" src="https://img.shields.io/badge/runtimes-iOS%20%C2%B7%20Android%20%C2%B7%20Flutter%20%C2%B7%20React%20Native%20%C2%B7%20Web-101827?style=flat-square" />
 </p>
 
-<p align="center">
-  <img src="docs/media/motion-world-demo.gif" width="430" alt="A progress-controlled Motion World demo moving from zero to one hundred percent">
-</p>
+# Motion World
+
+**Motion World turns generated or supplied images into motion that your application can control.** It can create images with ChatGPT or Codex, send approved frames to Higgsfield or another video provider, process the returned video into application-friendly assets, and generate runtime adapters for iOS, Android, Flutter, React Native, and the web.
+
+The output is not limited to autoplay video. Your app can control the visual state using elapsed time, a countdown, a count, scroll position, drag distance, a sensor, a state machine, network progress, audio level, or any value normalized to `0...1`.
+
+```text
+source value → progress 0...1 → motion runtime → exact visual state
+```
 
 ---
 
-## What Motion World actually does
-
-Most AI-video workflows stop at an MP4. Motion World treats that MP4 as an intermediate motion source.
-
-```text
-Prompt or reference images
-        ↓
-ChatGPT / Codex / another image generator
-        ↓
-Higgsfield / another video provider
-        ↓
-Scrub-ready MP4 · frame sequence · sprite atlas · fallback posters
-        ↓
-SwiftUI · Jetpack Compose · Flutter · React Native · Web
-        ↓
-Time · countdown · counter · scroll · drag · sensor · state · network progress
-```
-
-The same animation can respond to a 20-minute focus session, a checkout-progress value, page scroll, drag position, a workout counter, upload status, or any application value normalized to `0...1`.
+## See it working
 
 <p align="center">
-  <img src="docs/media/architecture.svg" width="100%" alt="Motion World architecture from image generation to runtime integration">
+  <img src="docs/media/motion-world-demo.gif" alt="Motion World progress-controlled demo" width="800" />
 </p>
-
-## Why this is different
-
-| Ordinary AI-video workflow | Motion World |
-|---|---|
-| Produces a video to play from start to finish | Produces motion that can be positioned at any progress value |
-| Tied to one provider | Provider adapters for Higgsfield, shell commands, manual exports, and future HTTP providers |
-| Video is the final output | Video is converted into runtime packages |
-| One implementation per platform | One motion contract with adapters for five application stacks |
-| Playback controls the state | Your application state controls the motion |
-| Often depends on a network request | Runtime package can work fully offline |
-
-## Output formats
-
-Motion World can package a generated video in four complementary ways.
 
 <p align="center">
-  <img src="docs/media/output-matrix.svg" width="100%" alt="Comparison of scrub video, frame sequence, sprite atlas, and poster outputs">
+  <a href="docs/media/motion-world-demo.mp4"><strong>Open the MP4 demo</strong></a>
 </p>
 
-### Scrub-ready MP4
+The preview above was built with the repository itself:
 
-A small-GOP H.264 encode that can seek forward or backward from a normalized progress value. Best when visual fidelity and compact packaging matter.
-
-### Frame sequence
-
-Numbered WebP frames such as `frame_0000.webp`. Best when exact frame choice matters or native video seeking is unreliable.
-
-### Sprite atlas
-
-A PNG atlas plus JSON coordinates. Best for short UI motion and runtimes that benefit from one decoded texture.
-
-<p align="center">
-  <img src="docs/media/demo-atlas.png" width="850" alt="A generated Motion World sprite atlas">
-</p>
-
-### Fallback posters
-
-Static start, middle, and end images for reduced motion, low-memory devices, loading placeholders, previews, and failure handling.
+1. A source video was created.
+2. `prepare_motion.py` converted it into a seekable MP4, frame sequence, sprite atlas, and fallback posters.
+3. The same normalized progress value selected every state.
 
 <table>
   <tr>
-    <td align="center"><img src="docs/media/demo-start.webp" width="260" alt="Motion at zero percent"><br><strong>0%</strong></td>
-    <td align="center"><img src="docs/media/demo-middle.webp" width="260" alt="Motion at fifty percent"><br><strong>50%</strong></td>
-    <td align="center"><img src="docs/media/demo-end.webp" width="260" alt="Motion at one hundred percent"><br><strong>100%</strong></td>
+    <th align="center">0%</th>
+    <th align="center">50%</th>
+    <th align="center">100%</th>
+  </tr>
+  <tr>
+    <td><img src="docs/media/demo-start.webp" alt="Motion at zero percent" /></td>
+    <td><img src="docs/media/demo-middle.webp" alt="Motion at fifty percent" /></td>
+    <td><img src="docs/media/demo-end.webp" alt="Motion at one hundred percent" /></td>
   </tr>
 </table>
 
-## The motion contract
+The generated sprite atlas is also included at [`docs/media/demo-atlas.png`](docs/media/demo-atlas.png), with its frame map in [`docs/media/demo-package/atlas/atlas.json`](docs/media/demo-package/atlas/atlas.json).
 
-Every runtime receives a normalized value:
+---
 
-```text
-progress = 0.0  → first frame
-progress = 0.5  → middle frame
-progress = 1.0  → final frame
-```
+## What problem it solves
 
-The driver can be replaced without changing the animation package.
+AI video tools make video files. Application interfaces need **controllable state**.
 
-| Driver | Example mapping |
-|---|---|
-| Elapsed time | `(now - start) / (end - start)` |
-| Countdown | `1 - remaining / duration` |
-| Counter | `completed / target` |
-| Scroll | `scrollOffset / scrollableDistance` |
-| Drag | `translation / dragRange` |
-| Sensor | Normalize a measured range into `0...1` |
-| State machine | Assign each state a checkpoint or range |
-| Network progress | `uploadedBytes / totalBytes` |
-| Audio | Normalize amplitude, beat position, or playback time |
-| Custom | Any deterministic value from `0` to `1` |
+A normal video answers:
 
-Read the complete driver reference in [`progress-drivers.md`](skills/motion-world/references/progress-drivers.md).
+> What should play next?
 
-## Supported application runtimes
+An application motion runtime answers:
 
-| Platform | Included adapter | Typical renderer |
+> What should the visual look like at exactly 37%?
+
+That difference matters when motion represents a timer, task completion, onboarding step, fitness goal, prayer session, upload, purchase flow, educational sequence, map route, or scroll section.
+
+Motion World separates the pipeline into five replaceable parts:
+
+| Part | Responsibility | Replaceable? |
+|---|---|---:|
+| Image provider | Creates start, end, and reference frames | Yes |
+| Video provider | Animates the approved frames | Yes |
+| Motion processor | Converts video into runtime media | Yes |
+| Runtime adapter | Displays the selected state on each platform | Yes |
+| Progress driver | Maps application data to `0...1` | Yes |
+
+---
+
+## How the pipeline works
+
+<p align="center">
+  <img src="docs/media/architecture.svg" alt="Motion World architecture" width="100%" />
+</p>
+
+### 1. Create or supply source images
+
+Use one source for all keyframes in a visual set to reduce style drift.
+
+Supported paths:
+
+- ChatGPT image generation.
+- Codex `image_gen`.
+- Existing product artwork.
+- Local PNG, WebP, JPEG, or HEIF files.
+- Any external image provider that can save files locally.
+
+Motion World keeps user-facing text outside artwork. Text remains native SwiftUI, Compose, Flutter, React Native, or HTML.
+
+### 2. Animate with a video provider
+
+The included runner supports:
+
+| Provider type | Status | Use case |
+|---|---:|---|
+| `higgsfield_cli` | Built in | Automated Higgsfield generation and download |
+| `generic_shell` | Built in | Any provider exposed through a CLI or wrapper script |
+| `manual` | Built in | Upload images yourself and place the returned file at the declared output path |
+| `generic_http` | Contract included | Add an endpoint-specific wrapper for upload, polling, and download |
+
+The skill plans provider commands before spending credits. Higgsfield commands support start images, end images, references, model selection, duration, and aspect ratio when the selected model accepts them.
+
+### 3. Process the returned video
+
+The processor can create:
+
+<p align="center">
+  <img src="docs/media/output-matrix.svg" alt="Motion World output formats" width="100%" />
+</p>
+
+| Output | What it contains | Best fit |
 |---|---|---|
-| iOS / macOS | Swift | `AVPlayerItemVideoOutput` or frame sequence |
-| Android | Kotlin | Media3 or Compose frame sequence |
-| Flutter | Dart | Video controller or asset frames |
-| React Native | TypeScript | Native video or image sequence |
-| Web | JavaScript | Video seeking, canvas, or image sequence |
+| Scrub video | Constant-frame-rate H.264 MP4, short GOP, no B-frames, faststart | Cinematic web sections and long scenes |
+| Frame sequence | Zero-based WebP files such as `frame_0000.webp` | Native random access and exact state restoration |
+| Sprite atlas | Packed PNG atlases plus `atlas.json` | Short UI motion with fewer file reads |
+| Posters | Start, middle, and end WebP files | Reduced Motion, low-memory fallback, previews |
+| Runtime metadata | Probe data, frame count, paths, and SHA-256 hashes | Integration, cache validation, diagnostics |
 
-The installer copies the selected adapters into a generated integration directory:
+### 4. Install runtime adapters
 
-```bash
-python3 skills/motion-world/scripts/install_runtime_adapters.py motion-project.json
-```
+The repository includes reference adapters for:
 
-## Image generation
+- SwiftUI / iOS.
+- Jetpack Compose / Android.
+- Flutter.
+- React Native.
+- Browser JavaScript.
 
-Motion World is image-provider agnostic.
+### 5. Connect any progress driver
 
-### ChatGPT or Codex image generation
-
-Ask the agent to generate the approved start image, end image, or scene sequence. Keep the camera, aspect ratio, lighting, palette, and subject identity consistent.
+The runtime only needs one clamped value:
 
 ```text
-Create a 9:16 start frame and end frame for a premium productivity app.
-The start frame shows an empty floating island at dawn.
-The end frame shows the same island, same camera, and same horizon,
-now completed with vegetation, water, warm lights, and subtle atmosphere.
-No text, no logo, no interface, no camera change.
+0.0 = first visual state
+0.5 = middle visual state
+1.0 = final visual state
 ```
 
-The skill includes prompt rules in [`image-prompts.md`](skills/motion-world/references/image-prompts.md) and a Codex adapter guide in [`codex-image-gen.md`](skills/motion-world/references/providers/image/codex-image-gen.md).
+The application remains the source of truth. The animation does not decide when a session, task, or process has completed.
 
-### Existing images
+---
 
-You can skip generation and provide artwork from your designer, application asset package, stock library, render pipeline, or another model.
-
-Motion World audits:
-
-- Image dimensions and orientation.
-- Camera and anchor consistency.
-- Subject identity.
-- Background and alpha requirements.
-- Text baked into artwork.
-- Start/end compatibility.
-- Runtime memory cost.
-
-## Video generation
-
-### Higgsfield
-
-The included provider runner can plan or execute a Higgsfield image-to-video job.
-
-```bash
-python3 skills/motion-world/scripts/provider_runner.py \
-  --project motion-project.json \
-  --clip hero-growth \
-  --execute
-```
-
-The runner:
-
-1. Reads the project manifest.
-2. Resolves the start, end, and reference images.
-3. Checks the selected provider and model configuration.
-4. Builds the provider command.
-5. Runs the generation.
-6. Stores the raw response for diagnosis.
-7. Downloads or resolves the resulting video.
-8. Hands it to the packaging pipeline.
-
-See [`higgsfield.md`](skills/motion-world/references/providers/video/higgsfield.md).
-
-### Any other video platform
-
-Use one of these provider modes:
-
-- `generic_shell`: describe a CLI command template.
-- `manual`: generate elsewhere, then place the returned MP4 at the expected path.
-- `generic_http`: implement an API adapter using the documented provider contract.
-
-The provider contract lives in [`provider-contract.md`](skills/motion-world/references/provider-contract.md).
-
-## Quick start
+## 60-second start
 
 ### Requirements
 
 - Python 3.10 or newer.
-- `ffmpeg` and `ffprobe`.
-- Pillow for frame and atlas processing.
-- A video provider only when generating a new video.
+- `ffmpeg` and `ffprobe` on `PATH`.
+- Pillow for sprite atlases.
+- Optional: Higgsfield CLI and an authenticated account.
+- Optional: Codex CLI for image generation through your ChatGPT subscription.
 
-macOS:
+### Install system dependencies
+
+<details>
+<summary><strong>macOS</strong></summary>
 
 ```bash
 brew install ffmpeg python
-python3 -m pip install Pillow jsonschema
+python3 -m pip install Pillow
 ```
 
-Ubuntu / Debian:
+</details>
+
+<details>
+<summary><strong>Ubuntu / Debian</strong></summary>
 
 ```bash
 sudo apt update
 sudo apt install -y ffmpeg python3 python3-pip
-python3 -m pip install Pillow jsonschema
+python3 -m pip install --user Pillow
 ```
 
-### 1. Install the skill
+</details>
 
-With the skills CLI:
+<details>
+<summary><strong>Windows</strong></summary>
 
-```bash
-npx skills add Nasser934/motion-world
+Install Python 3.10+, install FFmpeg, add its `bin` directory to `PATH`, then run:
+
+```powershell
+py -m pip install Pillow
 ```
 
-For Codex directly:
+Verify:
+
+```powershell
+ffmpeg -version
+ffprobe -version
+py --version
+```
+
+</details>
+
+### Install the agent skill
+
+#### Codex and other Skills CLI agents
 
 ```bash
 npx skills add Nasser934/motion-world -a codex
 ```
 
-Manual installation:
+Or select an agent interactively:
+
+```bash
+npx skills add Nasser934/motion-world
+```
+
+#### Claude Code plugin
+
+```text
+/plugin marketplace add Nasser934/motion-world
+/plugin install motion-world@motion-world
+```
+
+#### Manual install
 
 ```bash
 git clone https://github.com/Nasser934/motion-world.git
-mkdir -p ~/.codex/skills
 cp -R motion-world/skills/motion-world ~/.codex/skills/
+# or
+cp -R motion-world/skills/motion-world ~/.claude/skills/
 ```
 
-### 2. Create a project
+### Create a project
 
 ```bash
-python3 skills/motion-world/scripts/init_project.py \
-  --name "product-growth" \
-  --orientation portrait \
-  --output motion-project.json
+python3 skills/motion-world/scripts/init_project.py my-motion \
+  --preset generic-cinematic
 ```
 
-Or start from the generic example:
+Generated structure:
+
+```text
+my-motion/
+├── motion-project.json
+├── prompts/
+├── input/
+├── provider-output/
+├── build/
+└── runtime/
+```
+
+### Validate before generation
 
 ```bash
-cp skills/motion-world/references/examples/generic-growth.motion-project.json \
-   motion-project.json
+python3 skills/motion-world/scripts/validate_project.py \
+  my-motion/motion-project.json
 ```
 
-### 3. Validate it
-
-```bash
-python3 skills/motion-world/scripts/validate_project.py motion-project.json
-```
-
-### 4. Plan or run video generation
-
-Preview the provider command without spending credits:
-
-```bash
-python3 skills/motion-world/scripts/provider_runner.py \
-  --project motion-project.json \
-  --clip hero-growth
-```
-
-Run it:
+### Preview provider commands without spending credits
 
 ```bash
 python3 skills/motion-world/scripts/provider_runner.py \
-  --project motion-project.json \
-  --clip hero-growth \
+  my-motion/motion-project.json \
+  --plan
+```
+
+### Generate with the configured provider
+
+For supported automated providers:
+
+```bash
+python3 skills/motion-world/scripts/provider_runner.py \
+  my-motion/motion-project.json \
   --execute
 ```
 
-### 5. Package the video
+For manual mode, upload the declared start/end images and prompt to your chosen platform, then save the result at the output path printed by `--plan`.
+
+### Convert the video into runtime assets
 
 ```bash
 python3 skills/motion-world/scripts/prepare_motion.py \
-  --project motion-project.json \
-  --clip hero-growth
+  --input my-motion/provider-output/source.mp4 \
+  --out my-motion/build \
+  --profiles scrub,frames,atlas,posters \
+  --fps 30 \
+  --frame-count 180
 ```
 
-Generated output:
-
-```text
-build/hero-growth/
-├── scrub/
-│   └── master.mp4
-├── frames/
-│   ├── frame_0000.webp
-│   ├── frame_0001.webp
-│   └── ...
-├── atlas/
-│   ├── atlas.json
-│   ├── atlas_000.png
-│   └── ...
-├── posters/
-│   ├── start.webp
-│   ├── middle.webp
-│   └── end.webp
-└── motion-runtime.json
-```
-
-### 6. Generate platform integration files
+### Generate platform integration folders
 
 ```bash
-python3 skills/motion-world/scripts/install_runtime_adapters.py motion-project.json
+python3 skills/motion-world/scripts/install_runtime_adapters.py \
+  my-motion/motion-project.json
 ```
 
-Then copy the generated adapter and package into your application target.
+---
 
-## Project manifest
+## The project contract
 
-`motion-project.json` is the portable contract between image generation, video generation, processing, and application integration.
+Every project is described by `motion-project.json`. The schema is located at:
+
+```text
+skills/motion-world/references/motion-project.schema.json
+```
+
+Minimal example:
 
 ```json
 {
-  "schemaVersion": "1.0",
-  "name": "product-growth",
-  "canvas": {
-    "width": 1080,
-    "height": 1920,
-    "orientation": "portrait"
+  "$schema": "../skills/motion-world/references/motion-project.schema.json",
+  "version": "1.0",
+  "project": {
+    "id": "seed-to-tree",
+    "title": "Seed to tree",
+    "description": "A growth scene controlled by progress"
   },
-  "providers": {
-    "video": {
-      "type": "higgsfield",
-      "model": "seedance_2_0"
+  "imageProvider": {
+    "type": "codex_image_gen"
+  },
+  "videoProvider": {
+    "type": "higgsfield_cli",
+    "model": "seedance_2_0",
+    "config": {
+      "aspectRatio": "9:16"
     }
   },
   "clips": [
     {
-      "id": "hero-growth",
-      "startImage": "assets/start.png",
-      "endImage": "assets/end.png",
-      "prompt": "One continuous controlled transformation, no cuts...",
-      "sourceVideo": "build/raw/hero-growth.mp4",
-      "outputs": ["scrubVideo", "frames", "atlas", "posters"]
+      "id": "growth",
+      "promptFile": "prompts/growth.txt",
+      "startImage": "input/start.png",
+      "endImage": "input/end.png",
+      "durationSeconds": 8,
+      "output": "provider-output/source.mp4"
     }
   ],
+  "processing": {
+    "profiles": ["scrub", "frames", "atlas", "posters"]
+  },
   "runtimes": ["ios", "android", "flutter", "react-native", "web"]
 }
 ```
 
-Validate against [`motion-project.schema.json`](skills/motion-world/references/motion-project.schema.json).
+Full examples:
 
-## SwiftUI example
+- [`generic-growth.motion-project.json`](skills/motion-world/references/examples/generic-growth.motion-project.json)
+- [`generic-shell-provider.json`](skills/motion-world/references/examples/generic-shell-provider.json)
+- [`sukun-oasis.motion-project.json`](skills/motion-world/references/examples/sukun-oasis.motion-project.json) — an optional example, not a dependency
 
-```swift
-import SwiftUI
+---
 
-struct ProgressScene: View {
-    let startedAt: Date
-    let endsAt: Date
+## Image generation workflow
 
-    var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
-            let progress = MotionProgress.elapsed(
-                now: context.date,
-                start: startedAt,
-                end: endsAt
-            )
+A good image-to-video result begins with compatible keyframes.
 
-            FrameSequenceView(
-                progress: progress,
-                frameCount: 120,
-                assetName: { index in
-                    String(format: "frame_%04d", index)
-                }
-            )
-        }
+### Recommended sequence
+
+1. Write one style preamble.
+2. Generate the start frame.
+3. Review composition and safe areas.
+4. Generate the end frame using the approved start frame as style reference when the provider supports it.
+5. Compare camera angle, focal length, subject identity, lighting, horizon, and aspect ratio.
+6. Only then send the frames to the video provider.
+
+### Image rules
+
+- Keep the main subject inside the safe area for the target platform.
+- Generate portrait and landscape compositions separately when both matter.
+- Do not rely on a center crop for important mobile content.
+- Keep UI text out of artwork.
+- Keep start and end frame geometry compatible.
+- Avoid unexplained object additions between keyframes.
+- Keep one art source per visual set when possible.
+
+Prompt guidance is in [`image-prompts.md`](skills/motion-world/references/image-prompts.md).
+
+---
+
+## Higgsfield integration
+
+Set the provider type:
+
+```json
+{
+  "videoProvider": {
+    "type": "higgsfield_cli",
+    "model": "seedance_2_0",
+    "config": {
+      "aspectRatio": "9:16"
     }
+  }
 }
 ```
 
-`TimelineView` refreshes the UI. Your stored start and end timestamps remain the source of truth.
+Then inspect the plan:
 
-## Web example
-
-```html
-<video id="motion" muted playsinline preload="auto" src="master.mp4"></video>
-<script src="motion-runtime.js"></script>
-<script>
-  const runtime = createMotionRuntime(document.querySelector('#motion'));
-
-  addEventListener('scroll', () => {
-    const distance = document.documentElement.scrollHeight - innerHeight;
-    runtime.setProgress(distance > 0 ? scrollY / distance : 0);
-  });
-</script>
+```bash
+python3 skills/motion-world/scripts/provider_runner.py \
+  motion-project.json \
+  --plan
 ```
 
-## Frame-sequence example
+The plan prints:
 
-```javascript
-function frameIndex(progress, frameCount) {
-  const p = Math.min(1, Math.max(0, progress));
-  return Math.round(p * (frameCount - 1));
+- Authentication preflight.
+- Model schema preflight.
+- One command per clip.
+- Input image paths.
+- Output video paths.
+
+Execute only after reviewing cost, duration, aspect ratio, and model support:
+
+```bash
+python3 skills/motion-world/scripts/provider_runner.py \
+  motion-project.json \
+  --execute
+```
+
+The runner stores the provider JSON response beside the output video for diagnosis.
+
+Higgsfield-specific notes are in [`higgsfield.md`](skills/motion-world/references/providers/video/higgsfield.md).
+
+---
+
+## Use any other video provider
+
+### Generic CLI wrapper
+
+```json
+{
+  "videoProvider": {
+    "type": "generic_shell",
+    "commandTemplate": "my-video-cli --prompt-file {prompt_file} --start {start_image} --end {end_image} --duration {duration} --output {output}"
+  }
 }
-
-const filename = `frame_${String(frameIndex(progress, 120)).padStart(4, '0')}.webp`;
 ```
 
-## Reduced motion
+Supported placeholders:
 
-Every production integration should provide a reduced-motion path.
+| Placeholder | Value |
+|---|---|
+| `{prompt_file}` | Full prompt file path |
+| `{start_image}` | Start image path or empty string |
+| `{end_image}` | End image path or empty string |
+| `{output}` | Required local output path |
+| `{duration}` | Requested duration |
+| `{model}` | Clip or provider model |
+| `{aspect_ratio}` | Requested aspect ratio |
 
-Recommended behavior:
+### Manual provider
 
-- Use a static poster or a few checkpoint crossfades.
-- Do not repeatedly scrub video.
-- Preserve the same state meaning at 0%, 50%, and 100%.
-- Keep text and actions usable without motion.
-- Respect the platform's accessibility setting.
+Set:
 
-## Performance guidance
+```json
+{
+  "videoProvider": {
+    "type": "manual"
+  }
+}
+```
+
+The plan prints exactly which images, prompt, and output path to use. This works with a browser-only platform that has no CLI or API.
+
+### HTTP provider
+
+`generic_http` defines the contract, but authentication, upload format, polling, and result parsing vary by provider. Add a small shell or Python wrapper and call it through `generic_shell`.
+
+---
+
+## Processing profiles
 
 ### Scrub video
 
-- Encode H.264 with frequent keyframes.
-- Disable audio unless required.
-- Preload only the active clip.
-- Avoid issuing another seek while a seek is pending.
-- Keep a poster visible until the first decoded frame appears.
+Creates a video designed for frequent seeking:
+
+```bash
+python3 skills/motion-world/scripts/prepare_motion.py \
+  --input source.mp4 \
+  --out build \
+  --profiles scrub \
+  --fps 30 \
+  --gop 4 \
+  --crf 20
+```
+
+Processing choices:
+
+- Constant frame rate.
+- H.264.
+- `yuv420p`.
+- Short fixed GOP.
+- No B-frames.
+- Scene-cut keyframes disabled.
+- Faststart enabled.
+- Audio removed from the runtime master.
 
 ### Frame sequence
 
-- Choose a practical frame rate such as 12–30 fps based on motion detail.
-- Load nearby frames instead of decoding the entire sequence.
-- Use WebP or another runtime-appropriate format.
-- Keep file names zero-based and deterministic.
+```bash
+python3 skills/motion-world/scripts/prepare_motion.py \
+  --input source.mp4 \
+  --out build \
+  --profiles frames \
+  --frame-count 180 \
+  --frame-width 540
+```
+
+Frames use zero-based names:
+
+```text
+frame_0000.webp
+frame_0001.webp
+...
+```
 
 ### Sprite atlas
 
-- Stay within target GPU texture limits.
-- Split large animations into multiple atlases.
-- Include coordinates and frame order in JSON.
-- Measure decoded texture memory, not only compressed file size.
-
-## Quality gates
-
-The skill should reject or flag:
-
-- Start and end images with different cameras.
-- A horizontal source used as an accidental portrait crop.
-- Provider output with visible cuts when continuity was requested.
-- Text or interface elements baked into the generated image.
-- Missing first or final frames.
-- Frame numbering that does not start at zero.
-- Video without predictable seeking.
-- A runtime that calculates business state independently.
-- Missing reduced-motion fallback.
-- Provider credentials committed to source control.
-
-Run repository verification:
-
 ```bash
-bash scripts/verify.sh
+python3 skills/motion-world/scripts/prepare_motion.py \
+  --input source.mp4 \
+  --out build \
+  --profiles frames,atlas \
+  --frame-count 60 \
+  --atlas-columns 10 \
+  --atlas-max-frames 100
 ```
 
-## Repository structure
+### Posters
+
+```bash
+python3 skills/motion-world/scripts/prepare_motion.py \
+  --input source.mp4 \
+  --out build \
+  --profiles posters
+```
+
+Creates:
+
+```text
+posters/start.webp
+posters/middle.webp
+posters/end.webp
+```
+
+---
+
+## Progress drivers
+
+| Driver | Formula | Example |
+|---|---|---|
+| Elapsed time | `(now - start) / (end - start)` | Focus session, prayer period, cooldown |
+| Countdown | `1 - remaining / total` | Timer, launch countdown |
+| Count | `(current - min) / (goal - min)` | Habit, steps, completed tasks |
+| Scroll | `(offset - start) / distance` | Marketing page, product story |
+| Drag | `translation / allowedDistance` | Interactive reveal |
+| Sensor | Normalized sensor range | Tilt, pressure, rotation |
+| State machine | Map states to checkpoints | Onboarding, order lifecycle |
+| Network | `bytesSent / totalBytes` | Upload or download |
+| Audio | Smoothed amplitude mapping | Voice or music visualizer |
+| Custom | Any finite number clamped to `0...1` | Product-specific state |
+
+Rules:
+
+- Clamp invalid values.
+- Handle zero duration and zero range.
+- Restore directly at any progress value after relaunch.
+- Do not require earlier frames to play first.
+- Keep completion logic in the application domain layer.
+- Reduce or replace motion when the user enables reduced motion.
+
+Detailed formulas and edge cases are in [`progress-drivers.md`](skills/motion-world/references/progress-drivers.md).
+
+---
+
+## Runtime integration
+
+### SwiftUI
+
+```swift
+let progress = MotionProgress.elapsed(
+    now: Date(),
+    start: session.startDate,
+    end: session.endDate
+)
+
+FrameSequenceView(
+    progress: progress,
+    frameCount: 180,
+    reducedMotion: accessibilityReduceMotion
+) { index in
+    String(format: "frame_%04d", index)
+}
+```
+
+Reference files:
+
+- [`MotionProgress.swift`](skills/motion-world/references/runtimes/ios/MotionProgress.swift)
+- [`FrameSequenceView.swift`](skills/motion-world/references/runtimes/ios/FrameSequenceView.swift)
+
+### Jetpack Compose
+
+```kotlin
+val progress = MotionProgress.elapsed(
+    nowMillis = System.currentTimeMillis(),
+    startMillis = session.startMillis,
+    endMillis = session.endMillis
+)
+
+val frameIndex = ((frameCount - 1) * progress)
+    .roundToInt()
+    .coerceIn(0, frameCount - 1)
+```
+
+Reference files are in [`runtimes/android`](skills/motion-world/references/runtimes/android).
+
+### Flutter
+
+```dart
+final progress = MotionProgress.elapsed(
+  DateTime.now(),
+  session.start,
+  session.end,
+);
+
+final index = (progress * (frameCount - 1)).round();
+```
+
+Reference files are in [`runtimes/flutter`](skills/motion-world/references/runtimes/flutter).
+
+### React Native
+
+```ts
+const progress = elapsedProgress(
+  Date.now(),
+  session.startMs,
+  session.endMs,
+);
+
+const frameIndex = Math.round(progress * (frameCount - 1));
+```
+
+Reference files are in [`runtimes/react-native`](skills/motion-world/references/runtimes/react-native).
+
+### Web scrub video
+
+```js
+import { ScrubVideoRuntime, scrollDriver } from './motion-runtime.js';
+
+const runtime = new ScrubVideoRuntime(
+  document.querySelector('video'),
+  { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches }
+);
+
+function update() {
+  runtime.setProgress(scrollDriver());
+  requestAnimationFrame(update);
+}
+
+update();
+```
+
+Reference file: [`motion-runtime.js`](skills/motion-world/references/runtimes/web/motion-runtime.js).
+
+---
+
+## Choosing the runtime format
+
+| Situation | Recommended output |
+|---|---|
+| Long cinematic camera move on a website | Scrub video |
+| Native timer that must restore at an exact state | Frame sequence |
+| Small badge, icon, or short loop | Sprite atlas |
+| Low-memory device | Reduced frame sequence or posters |
+| Reduce Motion enabled | Posters or three-state crossfade |
+| Simple separable artwork | Native layered interpolation |
+| App Store or investor video | Playback MP4 exported from the same source |
+
+A single project can generate multiple formats. Use a different format per target when that improves reliability or size.
+
+---
+
+## Example applications
+
+- A seed grows into a full garden as a habit streak advances.
+- A landscape changes during a focus session.
+- A product camera move follows page scroll.
+- A delivery route moves through order states.
+- A character evolves as a user completes lessons.
+- A progress scene follows an upload.
+- A map animation follows GPS distance.
+- A wellness environment responds to breathing or audio.
+- An App Store preview uses the same provider output as the product runtime.
+
+Sukun is included only as a sample configuration. Motion World does not depend on Sukun and is not installed inside the Sukun repository.
+
+---
+
+## Repository layout
 
 ```text
 motion-world/
-├── skills/motion-world/
-│   ├── SKILL.md
-│   ├── references/
-│   │   ├── examples/
-│   │   ├── providers/
-│   │   └── runtimes/
-│   └── scripts/
+├── .claude-plugin/
+│   └── marketplace.json
 ├── docs/
 │   ├── GUIDE_AR.md
-│   ├── PUBLISH_AR.md
 │   └── media/
-├── scripts/
-│   ├── render_readme_demo.py
-│   ├── publish.sh
-│   ├── publish.ps1
-│   └── verify.sh
+├── skills/
+│   └── motion-world/
+│       ├── SKILL.md
+│       ├── references/
+│       │   ├── examples/
+│       │   ├── providers/
+│       │   └── runtimes/
+│       └── scripts/
+├── LICENSE
+├── NOTICE
 ├── README.md
 ├── README_AR.md
-├── CONTRIBUTING.md
-├── SECURITY.md
-├── CHANGELOG.md
-└── LICENSE
+├── TEST_REPORT.md
+└── VERSION
 ```
 
-## Examples
+---
 
-### Generic growth
+## Validation and test proof
 
-[`generic-growth.motion-project.json`](skills/motion-world/references/examples/generic-growth.motion-project.json) demonstrates the complete provider and runtime contract without tying the skill to one application.
+Run project validation:
 
-### Sukun oasis
+```bash
+python3 skills/motion-world/scripts/validate_project.py \
+  path/to/motion-project.json
+```
 
-[`sukun-oasis.motion-project.json`](skills/motion-world/references/examples/sukun-oasis.motion-project.json) is an optional example showing a prayer-focus oasis driven by real session time. It is not the skill's identity and does not place the generic skill inside the Sukun repository.
+Run basic repository checks:
 
-## Security
+```bash
+python3 -m compileall skills/motion-world/scripts
+node --check skills/motion-world/references/runtimes/web/motion-runtime.js
+```
 
-- Never commit provider keys, cookies, OAuth tokens, or generated private URLs.
-- Prefer local environment variables and provider-native authentication.
-- Review generated media before distribution.
-- Treat prompts and provider responses as project artifacts that may contain sensitive details.
+The included test report covers:
 
-See [`SECURITY.md`](SECURITY.md).
+- Python compilation.
+- JSON validation.
+- JavaScript syntax.
+- Swift parsing when `swiftc` is available.
+- Higgsfield command planning.
+- Runtime adapter installation.
+- End-to-end FFmpeg processing.
+- Zero-based frame extraction.
+- Sprite atlas creation.
+- Poster generation.
+- Runtime metadata and hashes.
+
+See [`TEST_REPORT.md`](TEST_REPORT.md).
+
+---
+
+## Production checklist
+
+Before shipping:
+
+### Source media
+
+- [ ] Start and end images use matching composition.
+- [ ] Important content stays inside target safe areas.
+- [ ] Portrait output was composed for portrait.
+- [ ] Text is native, not baked into artwork.
+- [ ] Provider terms permit the intended use.
+
+### Processing
+
+- [ ] Runtime video has a short GOP.
+- [ ] Frame names start at `0000`.
+- [ ] Frame count matches metadata.
+- [ ] First and final states were inspected.
+- [ ] Package size was measured on the real device.
+
+### Application
+
+- [ ] Progress clamps to `0...1`.
+- [ ] Relaunch restores the same visual state.
+- [ ] Backgrounding does not create a second timer.
+- [ ] Reduced Motion has a usable fallback.
+- [ ] Offline behavior was tested.
+- [ ] Screen readers receive a meaningful scene label.
+- [ ] Decorative frames are hidden from accessibility APIs.
+
+---
+
+## What Motion World is not
+
+- It is not a new video-generation model.
+- It does not require Higgsfield.
+- It is not limited to scroll pages.
+- It does not force WebView code into native applications.
+- It does not replace application state management.
+- It does not make Apple-controlled shield screens accept arbitrary SwiftUI or JavaScript.
+- It does not claim that every AI video will scrub well without processing.
+
+---
+
+## Motion World vs other approaches
+
+| Approach | Best at | Limitation Motion World addresses |
+|---|---|---|
+| Normal MP4 | Playback | Weak random access and state restoration |
+| Lottie | Vector UI animation | Requires vector animation assets, not arbitrary AI video |
+| Rive | Interactive vector state machines | Requires authoring inside Rive |
+| Sprite sheet | Compact short sequences | Needs extraction, packing, metadata, and runtime mapping |
+| Scroll-video page | Cinematic web storytelling | Usually tied to scroll and one web implementation |
+| Motion World | Provider-to-runtime pipeline | Adds processing, multi-format output, and cross-platform drivers |
+
+Motion World can coexist with Lottie, Rive, or native layers. It chooses the runtime format per use case instead of treating one format as the answer to every animation.
+
+---
+
+## Troubleshooting
+
+<details>
+<summary><strong><code>ffmpeg</code> or <code>ffprobe</code> is not found</strong></summary>
+
+Install FFmpeg and confirm both commands work in the same terminal used to run Python.
+
+```bash
+ffmpeg -version
+ffprobe -version
+```
+
+</details>
+
+<details>
+<summary><strong>Atlas generation says Pillow is missing</strong></summary>
+
+```bash
+python3 -m pip install Pillow
+```
+
+</details>
+
+<details>
+<summary><strong>The provider video jumps when scrubbed</strong></summary>
+
+Reprocess it with the scrub profile and a short GOP:
+
+```bash
+python3 skills/motion-world/scripts/prepare_motion.py \
+  --input source.mp4 \
+  --out build \
+  --profiles scrub \
+  --gop 4
+```
+
+For exact native state, use a frame sequence instead of video seeking.
+
+</details>
+
+<details>
+<summary><strong>The first displayed frame is wrong</strong></summary>
+
+Check that your runtime uses zero-based frame names beginning with `frame_0000.webp`. The included extractor and runtime use the same convention.
+
+</details>
+
+<details>
+<summary><strong>Higgsfield returns JSON but no video is downloaded</strong></summary>
+
+Inspect the saved `*.provider.json` file. The runner searches common result URL keys recursively. A provider response change may require updating `find_result_url`.
+
+</details>
+
+<details>
+<summary><strong>The mobile composition is cropped badly</strong></summary>
+
+Generate a separate 9:16 source composition. Do not assume a 16:9 camera move will remain readable after center cropping.
+
+</details>
+
+---
+
+## Security and privacy
+
+- Runtime packages can run fully offline.
+- Provider credentials stay in the provider CLI or wrapper environment.
+- Do not commit API keys, access tokens, signed URLs, or provider responses containing secrets.
+- Review generated media before publishing it.
+- Keep private source images outside public repositories unless you have permission to publish them.
+
+---
 
 ## Contributing
 
-Provider adapters, runtime integrations, test fixtures, and documentation improvements are welcome. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
+Useful contributions include:
 
-## Attribution
+- Provider adapters.
+- Runtime adapters.
+- Better asset-size strategies.
+- Device performance reports.
+- Accessibility improvements.
+- Additional project presets.
+- Tests for Windows, Linux, macOS, iOS, and Android.
 
-Motion World was inspired in part by the progress-scrubbing, mobile-composition, and media-pipeline concepts in the MIT-licensed [`scroll-world`](https://github.com/oso95/scroll-world) skill. Motion World uses a different provider-agnostic architecture focused on reusable application runtimes and normalized state drivers.
+Open an issue with:
+
+1. The target platform.
+2. Provider and model.
+3. Project manifest with secrets removed.
+4. The exact command.
+5. Console output.
+6. Media metadata from `ffprobe`.
+
+---
+
+## Credits
+
+Motion World builds on production patterns used by scroll-controlled video experiences and was informed by the MIT-licensed [`scroll-world`](https://github.com/oso95/scroll-world) project. Motion World broadens the pattern into a provider-agnostic pipeline for time, count, scroll, gesture, sensor, state, and other application drivers.
 
 See [`NOTICE`](NOTICE) for attribution details.
+
+---
 
 ## License
 
 MIT. See [`LICENSE`](LICENSE).
+
+<p align="center">
+  <strong>Generate the motion once. Control it from any application state.</strong>
+</p>

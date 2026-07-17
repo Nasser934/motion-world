@@ -1,0 +1,48 @@
+<svg width="1400" height="620" viewBox="0 0 1400 620" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#090D20"/><stop offset="0.48" stop-color="#17133B"/><stop offset="1" stop-color="#0C3444"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="180" y1="130" x2="1100" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A98BFF"/><stop offset="0.48" stop-color="#7458F5"/><stop offset="1" stop-color="#63E6BE"/>
+    </linearGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="40"/></filter>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="26" flood-opacity="0.35"/></filter>
+  </defs>
+  <rect width="1400" height="620" rx="42" fill="url(#bg)"/>
+  <circle cx="1180" cy="92" r="180" fill="#6E54E8" fill-opacity="0.25" filter="url(#blur)"/>
+  <circle cx="230" cy="590" r="210" fill="#2CD5C4" fill-opacity="0.13" filter="url(#blur)"/>
+  <g opacity="0.65">
+    <circle cx="116" cy="105" r="2" fill="white"/><circle cx="184" cy="74" r="1.5" fill="white"/><circle cx="1250" cy="166" r="2" fill="white"/><circle cx="1085" cy="80" r="1.5" fill="white"/><circle cx="1300" cy="265" r="1.5" fill="white"/>
+  </g>
+  <text x="92" y="128" fill="#B7A5FF" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="700" letter-spacing="3">MOTION WORLD</text>
+  <text x="92" y="204" fill="white" font-family="Inter,Arial,sans-serif" font-size="62" font-weight="800">Turn generated images into</text>
+  <text x="92" y="278" fill="url(#accent)" font-family="Inter,Arial,sans-serif" font-size="62" font-weight="800">controllable motion for any app.</text>
+  <text x="94" y="328" fill="#C7D0E7" font-family="Inter,Arial,sans-serif" font-size="22">ChatGPT images → Higgsfield or any video provider → native runtime packages</text>
+  <g filter="url(#shadow)">
+    <rect x="92" y="390" width="180" height="78" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="182" y="421" text-anchor="middle" fill="#B7A5FF" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">INPUT</text>
+    <text x="182" y="449" text-anchor="middle" fill="white" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700">Images</text>
+    <path d="M280 429H344" stroke="#8A6CFF" stroke-width="4" stroke-linecap="round"/><path d="M332 418L344 429L332 440" stroke="#8A6CFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="360" y="390" width="220" height="78" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="470" y="421" text-anchor="middle" fill="#B7A5FF" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">PROVIDER</text>
+    <text x="470" y="449" text-anchor="middle" fill="white" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700">AI Video</text>
+    <path d="M588 429H652" stroke="#8A6CFF" stroke-width="4" stroke-linecap="round"/><path d="M640 418L652 429L640 440" stroke="#8A6CFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="668" y="390" width="258" height="78" rx="22" fill="#FFFFFF" fill-opacity="0.08" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="797" y="421" text-anchor="middle" fill="#B7A5FF" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">PROCESSOR</text>
+    <text x="797" y="449" text-anchor="middle" fill="white" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700">Scrub · Frames · Atlas</text>
+    <path d="M934 429H998" stroke="#62E5BD" stroke-width="4" stroke-linecap="round"/><path d="M986 418L998 429L986 440" stroke="#62E5BD" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="1014" y="390" width="294" height="78" rx="22" fill="#63E6BE" fill-opacity="0.10" stroke="#63E6BE" stroke-opacity="0.35"/>
+    <text x="1161" y="421" text-anchor="middle" fill="#63E6BE" font-family="Inter,Arial,sans-serif" font-size="15" font-weight="700">RUNTIME</text>
+    <text x="1161" y="449" text-anchor="middle" fill="white" font-family="Inter,Arial,sans-serif" font-size="20" font-weight="700">iOS · Android · Web</text>
+  </g>
+  <g>
+    <rect x="92" y="512" width="150" height="42" rx="21" fill="#7659F4"/><text x="167" y="539" text-anchor="middle" fill="white" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Time</text>
+    <rect x="254" y="512" width="150" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.08"/><text x="329" y="539" text-anchor="middle" fill="#D7DFF3" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Scroll</text>
+    <rect x="416" y="512" width="150" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.08"/><text x="491" y="539" text-anchor="middle" fill="#D7DFF3" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Count</text>
+    <rect x="578" y="512" width="150" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.08"/><text x="653" y="539" text-anchor="middle" fill="#D7DFF3" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Drag</text>
+    <rect x="740" y="512" width="150" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.08"/><text x="815" y="539" text-anchor="middle" fill="#D7DFF3" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Sensor</text>
+    <rect x="902" y="512" width="150" height="42" rx="21" fill="#FFFFFF" fill-opacity="0.08"/><text x="977" y="539" text-anchor="middle" fill="#D7DFF3" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">State</text>
+    <rect x="1064" y="512" width="244" height="42" rx="21" fill="#63E6BE" fill-opacity="0.12" stroke="#63E6BE" stroke-opacity="0.25"/><text x="1186" y="539" text-anchor="middle" fill="#78F0C9" font-family="Inter,Arial,sans-serif" font-size="16" font-weight="700">Any normalized 0…1 value</text>
+  </g>
+</svg>

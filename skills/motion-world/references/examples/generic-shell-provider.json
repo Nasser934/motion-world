@@ -1,0 +1,8 @@
+{
+  "type": "generic_shell",
+  "model": "provider-model-name",
+  "commandTemplate": "your-video-cli --model {model} --prompt-file \"{prompt_file}\" --start-image \"{start_image}\" --end-image \"{end_image}\" --duration {duration} --aspect \"{aspect_ratio}\" --output \"{output}\"",
+  "config": {
+    "note": "Replace this command with any provider CLI or wrapper script. The wrapper must save the final video at {output}."
+  }
+}

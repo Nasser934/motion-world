@@ -1,0 +1,28 @@
+<svg width="1400" height="760" viewBox="0 0 1400 760" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1400" y2="760"><stop stop-color="#0B1025"/><stop offset="1" stop-color="#0D2832"/></linearGradient><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9C7CFF"/><stop offset="1" stop-color="#5DDED0"/></linearGradient></defs>
+<rect width="1400" height="760" rx="32" fill="url(#bg)"/>
+<text x="70" y="76" fill="white" font-family="Inter,Arial" font-size="34" font-weight="800">The complete pipeline</text>
+<text x="70" y="112" fill="#B8C3DA" font-family="Inter,Arial" font-size="18">The provider creates motion. Motion World turns it into an application runtime.</text>
+<g font-family="Inter,Arial">
+  <rect x="70" y="166" width="260" height="170" rx="24" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.13"/>
+  <text x="95" y="205" fill="#A98BFF" font-size="15" font-weight="700">1 · SOURCE IMAGES</text><text x="95" y="246" fill="white" font-size="24" font-weight="800">Create or import</text><text x="95" y="280" fill="#C3CCE0" font-size="17">ChatGPT image generation</text><text x="95" y="308" fill="#C3CCE0" font-size="17">Codex image_gen · Local files</text>
+  <path d="M346 252H402" stroke="#8E70FA" stroke-width="4" stroke-linecap="round"/><path d="M391 241L403 252L391 263" stroke="#8E70FA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="420" y="166" width="260" height="170" rx="24" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.13"/>
+  <text x="445" y="205" fill="#A98BFF" font-size="15" font-weight="700">2 · VIDEO PROVIDER</text><text x="445" y="246" fill="white" font-size="24" font-weight="800">Animate the frames</text><text x="445" y="280" fill="#C3CCE0" font-size="17">Higgsfield adapter</text><text x="445" y="308" fill="#C3CCE0" font-size="17">Generic CLI · API · Manual</text>
+  <path d="M696 252H752" stroke="#8E70FA" stroke-width="4" stroke-linecap="round"/><path d="M741 241L753 252L741 263" stroke="#8E70FA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="770" y="166" width="260" height="170" rx="24" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.13"/>
+  <text x="795" y="205" fill="#A98BFF" font-size="15" font-weight="700">3 · MOTION PROCESSOR</text><text x="795" y="246" fill="white" font-size="24" font-weight="800">Package for control</text><text x="795" y="280" fill="#C3CCE0" font-size="17">Seekable scrub video</text><text x="795" y="308" fill="#C3CCE0" font-size="17">Frames · Atlases · Posters</text>
+  <path d="M1046 252H1102" stroke="#63E6BE" stroke-width="4" stroke-linecap="round"/><path d="M1091 241L1103 252L1091 263" stroke="#63E6BE" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="1120" y="166" width="210" height="170" rx="24" fill="#63E6BE" fill-opacity="0.08" stroke="#63E6BE" stroke-opacity="0.32"/>
+  <text x="1145" y="205" fill="#63E6BE" font-size="15" font-weight="700">4 · RUNTIME</text><text x="1145" y="246" fill="white" font-size="24" font-weight="800">Ship anywhere</text><text x="1145" y="280" fill="#C3CCE0" font-size="17">SwiftUI · Compose</text><text x="1145" y="308" fill="#C3CCE0" font-size="17">Flutter · RN · Web</text>
+
+  <rect x="70" y="414" width="1260" height="270" rx="28" fill="#FFFFFF" fill-opacity="0.045" stroke="#FFFFFF" stroke-opacity="0.10"/>
+  <text x="98" y="457" fill="white" font-size="24" font-weight="800">One runtime contract</text>
+  <text x="98" y="490" fill="#B8C3DA" font-size="17">Every platform receives the same normalized progress value. No platform needs to understand the original provider.</text>
+  <rect x="98" y="540" width="205" height="76" rx="20" fill="#7659F4" fill-opacity="0.22" stroke="#9B83FF" stroke-opacity="0.5"/><text x="200" y="568" text-anchor="middle" fill="#B8A5FF" font-size="14" font-weight="700">PROGRESS DRIVER</text><text x="200" y="596" text-anchor="middle" fill="white" font-size="20" font-weight="800">0.0 → 1.0</text>
+  <path d="M321 578H382" stroke="#8E70FA" stroke-width="4" stroke-linecap="round"/><path d="M371 567L383 578L371 589" stroke="#8E70FA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="400" y="530" width="300" height="96" rx="22" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.13"/><text x="550" y="563" text-anchor="middle" fill="#A98BFF" font-size="14" font-weight="700">MOTION RUNTIME</text><text x="550" y="592" text-anchor="middle" fill="white" font-size="20" font-weight="800">Select frame / seek time</text>
+  <path d="M718 578H779" stroke="#63E6BE" stroke-width="4" stroke-linecap="round"/><path d="M768 567L780 578L768 589" stroke="#63E6BE" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="798" y="530" width="502" height="96" rx="22" fill="#63E6BE" fill-opacity="0.07" stroke="#63E6BE" stroke-opacity="0.24"/><text x="1049" y="563" text-anchor="middle" fill="#63E6BE" font-size="14" font-weight="700">APPLICATION STATE</text><text x="1049" y="592" text-anchor="middle" fill="white" font-size="20" font-weight="800">Time · countdown · count · scroll · drag · sensor · state</text>
+</g>
+</svg>

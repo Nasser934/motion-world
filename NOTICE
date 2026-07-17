@@ -1,0 +1,14 @@
+motion-world is an independent, provider-agnostic skill.
+
+Its workflow is inspired in part by oso95/scroll-world, especially these ideas:
+- maintain one visual style across generated scenes;
+- use actual rendered boundary frames when chaining video clips;
+- prepare mobile-specific output instead of blindly cropping desktop output;
+- drive motion by a normalized scroll/progress value;
+- use short GOP encodes for responsive seeking.
+
+scroll-world is MIT licensed. Upstream repository:
+https://github.com/oso95/scroll-world
+
+No upstream source code is required at runtime. Review the upstream license when
+copying upstream files or substantial portions into another distribution.

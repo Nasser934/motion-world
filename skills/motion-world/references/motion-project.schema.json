@@ -1,0 +1,285 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/motion-project.schema.json",
+  "title": "motion-world project",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "project",
+    "imageProvider",
+    "videoProvider",
+    "clips",
+    "processing",
+    "driver",
+    "runtimes"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.2"
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "ltr",
+            "rtl",
+            "auto"
+          ]
+        },
+        "stylePreamble": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "canvases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "safeArea": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "imageProvider": {
+      "$ref": "#/$defs/provider"
+    },
+    "videoProvider": {
+      "$ref": "#/$defs/provider"
+    },
+    "clips": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "promptFile",
+          "output"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "startImage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "endImage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "referenceImages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "promptFile": {
+            "type": "string"
+          },
+          "canvas": {
+            "type": "string"
+          },
+          "durationSeconds": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "model": {
+            "type": "string"
+          },
+          "output": {
+            "type": "string"
+          },
+          "connector": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "processing": {
+      "type": "object",
+      "required": [
+        "profiles"
+      ],
+      "properties": {
+        "profiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "scrub",
+              "frames",
+              "atlas",
+              "playback",
+              "posters"
+            ]
+          }
+        },
+        "fps": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "frameCount": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "scrub": {
+          "type": "object"
+        },
+        "frames": {
+          "type": "object"
+        },
+        "atlas": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "driver": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "elapsed_time",
+            "countdown",
+            "count",
+            "scroll",
+            "drag",
+            "sensor",
+            "state_machine",
+            "audio",
+            "network",
+            "custom"
+          ]
+        },
+        "config": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    },
+    "runtimes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "platform",
+          "mode"
+        ],
+        "properties": {
+          "platform": {
+            "enum": [
+              "ios_swiftui",
+              "android_compose",
+              "flutter",
+              "react_native",
+              "web"
+            ]
+          },
+          "mode": {
+            "enum": [
+              "scrub_video",
+              "frames",
+              "atlas",
+              "layered",
+              "playback"
+            ]
+          },
+          "outputDirectory": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "reducedMotion": {
+      "type": "object"
+    },
+    "provenance": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "$defs": {
+    "provider": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "chatgpt_image_gen",
+            "codex_image_gen",
+            "local",
+            "higgsfield_cli",
+            "generic_shell",
+            "generic_http",
+            "manual"
+          ]
+        },
+        "model": {
+          "type": "string"
+        },
+        "commandTemplate": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
