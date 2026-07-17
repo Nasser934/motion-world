@@ -2,66 +2,65 @@
 name: motion-world
 description: >
   Create strong progress-controlled motion for any application from generated or supplied images.
-  Ask one beginner-friendly question about the user's existing video subscriptions or preferred
-  provider, then route automatically to a suitable connected, free-credit, paid, manual, or local
-  provider. Krea MCP is the first probe when no provider is preferred, but it is used only when an
-  available model satisfies the clip. Generate aligned endpoint or checkpoint images, validate the
-  real provider video, then package it as scrub video, frame sequence, sprite atlas, posters, and
-  native/web runtime integrations driven by time, countdown, counter, scroll, drag, sensor, state,
-  audio, network progress, or any normalized 0...1 value. Supports SwiftUI, Android Compose,
-  Flutter, React Native, and Web. Sukun is only an optional example.
+  Ask one beginner-friendly question about existing video subscriptions or preferred providers, then
+  route automatically to a suitable connected, free-credit, paid, manual, or local provider. Krea
+  MCP is the first probe when no provider is preferred, but only an available model with the required
+  capabilities may be used. When automatic generation is unavailable, create a complete manual
+  provider kit with direct official links, source images, a detailed copy-paste prompt, exact settings,
+  and the expected return filename. Never hide a video inside a ZIP or build a large production package
+  from a local crossfade. Validate the real provider video, then package it as scrub video, frames,
+  atlas, posters, and native/web runtime integrations driven by any normalized 0...1 value.
 allowed-tools: Bash, Read, Write, Edit, AskUserQuestion, Skill
 ---
 
 # motion-world
 
-Build reusable application motion, not a one-off autoplay video.
+Build reusable application motion, not an unexplained autoplay video or a folder of hidden assets.
 
 ```text
 brief
 → compatible start/end/checkpoint images
-→ suitable real video provider
-→ validated provider video
+→ real provider video or complete manual handoff
+→ provider-video validation
 → target-specific motion assets
 → progress driver 0...1
 → exact visual state
 ```
 
-## Non-negotiable rules
+# Non-negotiable rules
 
-1. The user's application state is the source of truth. The animation never owns business timing.
+1. The host application state is the source of truth. The animation does not own business timing.
 2. Ask only for missing decisions. Do not ask technical questions that can be inferred.
-3. Do not ask the user to classify the intended usage. Keep provenance and terms checks internal;
-   surface them only when they create a concrete blocker.
+3. Do not ask the user to classify the intended usage.
 4. Ask before any paid generation unless the user already approved a spending policy.
-5. A local crossfade/interpolation is diagnostic only. Never call it a provider result or production
-   motion.
+5. A local crossfade/interpolation is diagnostic only. Never call it a provider result or production motion.
 6. Do not say “generated successfully” until a real provider video was received and validated.
-7. Generate end/checkpoint frames from the approved start frame whenever possible. Do not create
-   unrelated images and pretend they are one evolving scene.
-8. Text, labels, UI, and captions stay native. Do not bake them into generated scene artwork.
-9. Package only the runtime media needed by each target. Avoid shipping video, frames, and atlases
-   together without a reason.
+7. Generate end/checkpoint frames from the approved start frame whenever possible.
+8. Keep text, labels, captions, and UI native instead of baking them into scene artwork.
+9. Package only the media needed by each runtime target.
 10. Opening at any progress value must show the corresponding state without replaying from zero.
+11. If a video exists, provide a direct user-visible link and its exact path. Never make the user search a ZIP.
+12. If generation must be manual, create and link a complete manual-provider kit immediately. Never merely say “send me a video.”
+13. Do not generate frames, atlases, or a large integration ZIP before the real provider video returns, unless the user explicitly requested a diagnostic prototype.
 
-## Core runtime contract
+# Core runtime contract
 
 ```text
-source value → ProgressDriver → clamped progress 0...1 → MotionRuntime → visual frame
+source value → ProgressDriver → clamp 0...1 → MotionRuntime → exact visual state
 ```
 
-Built-in drivers:
+Supported drivers:
 
 - elapsed time;
 - countdown;
 - completed count / target;
-- scroll distance;
-- drag or pan distance;
+- scroll position;
+- drag distance;
 - sensor value;
 - state-machine segment;
-- audio playback or amplitude;
-- upload, download, or network progress;
-- custom callback.
+- audio playback/amplitude;
+- upload/download/network progress;
+- custom normalized value.
 
 Read `references/progress-drivers.md` for formulas and edge handling.
 
@@ -72,21 +71,18 @@ codecs, frame rates, GOP size, atlas layout, or provider model catalogs.
 
 ## Step 0 — inspect before asking
 
-Inspect the conversation, target repository, supplied assets, target platform, current state source,
-aspect ratio, safe areas, memory limits, offline needs, accessibility settings, and expected output.
-Do not ask for facts already present.
+Inspect the conversation, target repository, supplied assets, platform, progress source, aspect ratio,
+safe areas, memory limits, offline needs, accessibility requirements, and expected output. Do not ask
+for facts already present.
 
 ## Step 1 — ask one provider question
 
-Ask only when no existing provider preference or account is known:
+Ask only when no provider preference/account is already known:
 
 > Do you already have a subscription, credits, or a preferred AI-video service? Name it, or say
 > “none — choose the best for me.” I will ask before any paid generation.
 
-This is a grouped question. Do not follow it with a catalog of technical choices.
-
-If the user names a provider, use it first only when it can satisfy the clip. If it cannot, explain
-that in one sentence and route to the next suitable option.
+Do not follow this with a catalog of technical options.
 
 Read:
 
@@ -94,7 +90,7 @@ Read:
 - `references/provider-routing.md`
 - `references/provider-catalog.json`
 
-For a deterministic recommendation after probing available tools/accounts:
+Use the no-spend router after probing available tools/accounts:
 
 ```bash
 python3 skills/motion-world/scripts/route_provider.py \
@@ -106,40 +102,35 @@ python3 skills/motion-world/scripts/route_provider.py \
 
 ## Step 2 — derive the motion specification
 
-Infer and record:
+Infer internally:
 
-- what must visually change from 0% to 100%;
+- the visual change from 0% to 100%;
 - transformation type: `scene_evolution`, `world_transition`, `multi_checkpoint`, `loop`,
   `camera_flight`, `character_action`, or custom;
-- target platforms and canvases;
+- canvases and target platforms;
 - progress driver;
-- required endpoint/checkpoint count;
-- camera behavior: locked, parallax, pan, orbit, zoom, or deliberate transition;
+- endpoint/checkpoint count;
+- camera behavior;
 - duration and native output resolution;
-- runtime mode per platform;
+- runtime mode per target;
 - reduced-motion fallback;
 - package-size and memory budget.
 
-Do not ask the beginner to choose output codecs or renderers. Infer them from the target.
+Do not ask a beginner to choose codecs, renderers, or frame counts.
 
-## Step 3 — create `motion-project.json`
+## Step 3 — create and validate `motion-project.json`
 
-Use `references/motion-project.schema.json`.
-
-The project contract records:
+Use `references/motion-project.schema.json` and record:
 
 - project/canvas metadata;
-- provider policy and selected provider;
-- ordered clips;
-- approved endpoint/checkpoint images;
-- prompts and model settings;
+- provider policy and state;
+- clips and approved images;
+- prompts and settings;
 - processing profiles;
 - progress driver;
 - runtime targets;
 - reduced-motion behavior;
-- provenance and actual generation state.
-
-Validate:
+- provenance.
 
 ```bash
 python3 skills/motion-world/scripts/validate_project.py motion-project.json
@@ -147,135 +138,178 @@ python3 skills/motion-world/scripts/validate_project.py motion-project.json
 
 # Strong image production
 
-A strong video starts with compatible images. Provider quality cannot repair incompatible endpoints.
+Provider quality cannot repair incompatible endpoint images.
 
 ## Scene evolution
 
-Examples: empty island to oasis, seed to tree, empty room to furnished room.
+Examples: seed to tree, empty island to oasis, empty room to furnished room.
 
 1. Generate the start frame.
-2. Approve composition, anchors, safe areas, and permanent background geometry.
+2. Approve camera, anchors, safe areas, and permanent geometry.
 3. Create the end frame by editing or conditioning on the approved start frame.
-4. Lock camera, horizon, lighting direction, focal length, and permanent objects.
-5. Generate aligned intermediate checkpoints when the middle states have meaning.
+4. Lock horizon, camera, focal length, lighting direction, and permanent objects.
+5. Add aligned intermediate checkpoints when middle states matter.
 
-Reject the pair when the end frame changes the camera, horizon, subject bounds, lighting direction,
-or permanent background without the brief requiring it.
+Reject an endpoint pair when camera, horizon, subject bounds, light direction, or permanent background
+changes without the brief requiring it.
 
 ## World transition
 
 Examples: castle to cyberpunk city, desert to outer space.
 
-Geometry may deliberately transform. Do not describe this as camera-locked growth. Use prompts and
-providers optimized for controlled transformation.
+Geometry may deliberately transform. Do not describe this as camera-locked growth. Use a controlled
+transition prompt and an eligible provider.
 
 ## Multi-checkpoint evolution
 
-Use aligned 0%, 25%, 50%, 75%, and 100% frames when intermediate stages matter. Prefer genuine
+Use aligned 0%, 25%, 50%, 75%, and 100% frames when intermediate states carry meaning. Prefer genuine
 multi-frame/keyframe generation instead of a two-image morph.
 
 ## Image rules
 
 - Reuse one exact style preamble across related frames.
 - Generate native compositions for materially different aspect ratios.
-- Preserve subject identity, palette, lighting, camera, and anchors when required.
-- No text, UI, logos, captions, or watermarks unless explicitly part of the artwork.
-- Review and approve images before spending video credits.
-- Save approved inputs under `assets/source-images/` with dimensions and checksums.
+- Preserve identity, palette, light, camera, and anchors where required.
+- No text, UI, captions, logos, or watermarks.
+- Review images before spending video credits.
+- Store approved images under `assets/source-images/` with dimensions and checksums.
 
 # Provider routing
 
-Use the user's existing provider first when suitable. Otherwise:
+Use a suitable provider the user already has first. Otherwise:
 
-1. Probe **Krea MCP** first when connected. It is a gateway, not a guarantee; select only an actually
-   available model that supports the required start/end/checkpoint inputs.
-2. If no automatic free/connected route is suitable, use the easiest strong manual route:
-   Dreamina/Seedance or Vidu Web.
-3. Before paid automatic generation, request approval once and then use the strongest eligible route,
-   commonly Vidu API, MiniMax Hailuo-02, PixVerse API, Higgsfield, or fal API.
+1. Probe Krea MCP when connected; select only a model that actually supports the required inputs.
+2. If no connected automatic route works, create a manual kit for Krea Web, Dreamina/Seedance, and Vidu.
+3. Before paid automatic generation, ask once and then use the strongest eligible route, commonly
+   Vidu API, MiniMax Hailuo-02, PixVerse, Higgsfield, or fal.
 4. Use Wan 2.1 FLF2V or LTX locally only when a suitable GPU environment already exists.
-5. Keep local diagnostic interpolation as a separate, clearly labeled preview path.
+5. Keep diagnostic interpolation separate and explicitly labeled.
 
-Provider availability, model access, credits, and pricing change. Probe them at execution time. Never
-hard-code a claim that a provider or model is free.
+Provider availability, pricing, credits, and model capabilities change. Probe them at execution time.
+Never hard-code a promise that a provider or model is free.
 
-## Provider capability gate
+## Capability gate
 
-Before selection, confirm internally:
+Confirm internally:
 
-- first image only versus first + last versus multiple keyframes;
+- first frame only versus first + last versus multiple checkpoints;
 - portrait/landscape support and native resolution;
 - duration;
-- camera lock or camera motion;
+- locked camera versus deliberate camera motion;
 - reference-image support;
-- current model availability and account balance;
+- authentication, account balance, and model availability;
 - automatic execution versus one-step manual upload;
-- output download and watermark status.
+- downloadable MP4 and watermark status.
 
-Reject a provider route that cannot meet required capabilities, even if it is popular.
+Reject an ineligible route even if it is popular.
 
 ## Provider states
-
-Record one of these states during the workflow:
 
 - `PROVIDER_DISCOVERY`
 - `PROVIDER_AUTH_REQUIRED`
 - `PROVIDER_FREE_BALANCE_AVAILABLE`
 - `PROVIDER_PAID_APPROVAL_REQUIRED`
 - `PROVIDER_MODEL_UNAVAILABLE`
+- `MANUAL_PROVIDER_REQUIRED`
 - `PROVIDER_VIDEO_RECEIVED`
 - `PROVIDER_VIDEO_REJECTED`
 - `DIAGNOSTIC_PREVIEW_ONLY`
 - `PRODUCTION_ASSETS_GENERATED`
 - `INTEGRATION_VERIFIED`
 
-# Video generation
-
-Generate a low-cost draft first when credits allow. A draft must preserve the same required input
-capabilities as the final render; do not test a first/last-frame clip with a first-frame-only model.
+# Automatic provider path
 
 Before execution:
 
-1. Probe authentication and available tools.
+1. Probe authentication and available models.
 2. Inspect the selected model schema.
-3. Confirm the input images and prompt.
+3. Confirm required image inputs and prompt.
 4. Estimate cost when available.
-5. Ask immediately before a paid action when approval is required.
+5. Ask immediately before spending if approval is required.
 
-After execution, save:
+After execution, save and expose:
 
+- real returned MP4;
+- a direct user-visible link to the MP4;
+- provider/model/task identifiers;
 - raw provider response;
-- provider/model identifiers;
-- task ID;
-- returned source video;
-- actual cost/credits when available;
-- actual duration, resolution, codec, and checksum.
+- cost/credits when available;
+- duration, resolution, codec, and checksum.
 
-For multiple clips, use the actual last rendered frame of clip A as the start frame of clip B. Never
-substitute the original still for a rendered boundary frame.
+The final user message must state where the video is and link it directly. Do not only link a ZIP.
+
+# Manual provider path
+
+When no connected automatic provider can execute, do not ask the user to create an unspecified video.
+Run:
+
+```bash
+python3 skills/motion-world/scripts/provider_runner.py motion-project.json --handoff
+```
+
+or:
+
+```bash
+python3 skills/motion-world/scripts/create_manual_handoff.py motion-project.json
+```
+
+This must create `manual-provider-kit/` and `manual-provider-kit.zip` containing, for every clip:
+
+- `01-start-frame.png`;
+- `02-end-frame.png` when required;
+- reference/checkpoint images;
+- `03-copy-paste-prompt.txt` with the complete detailed prompt;
+- `README_AR.md` and `README.md`;
+- direct official provider links;
+- exact upload order and settings;
+- target aspect ratio, duration, resolution, camera, motion, and audio settings;
+- exact expected return filename;
+- machine-readable `manual-handoff.json`.
+
+The response to the user must directly link:
+
+1. the manual kit ZIP;
+2. each start/end/checkpoint image;
+3. the prompt text file;
+4. the official provider pages;
+5. any diagnostic preview separately, clearly labeled.
+
+Then stop. Do not build production frames, atlases, runtime copies, or a large final ZIP until the real
+provider MP4 is returned.
+
+After the user uploads the MP4, place it at the declared clip output path, validate it, and resume the
+pipeline automatically. Do not make the user repeat the brief.
+
+# Diagnostic preview path
+
+A local crossfade/interpolation may be useful only for testing layout or the progress contract.
+
+- It requires explicit approval or `--allow-diagnostic`.
+- Label it `DIAGNOSTIC_PREVIEW_ONLY`.
+- Return the MP4 directly.
+- Keep it lightweight.
+- Do not generate 180 frames, atlases, or a production integration bundle from it by default.
+- Do not imply it came from Krea, Higgsfield, Dreamina, Vidu, or another provider.
 
 # Provider-video validation
 
-Do not package the first returned file blindly.
+Do not package the first returned file blindly. Validate:
 
-Validate:
+- the real file exists, opens, and is linked to the user;
+- duration, orientation, resolution, codec, and frame rate are plausible;
+- first and last rendered frames match approved endpoints;
+- no black/blank frames;
+- no unintended cuts or crossfade when organic motion was requested;
+- no severe camera drift in a locked scene;
+- no duplication, disappearance, melting, text, or watermark;
+- continuous temporal motion;
+- portrait output is intentionally composed rather than blindly cropped.
 
-- real provider output exists and opens;
-- duration, dimensions, orientation, codec, and frame rate are plausible;
-- rendered first and last frames correspond to the approved endpoints;
-- no black or blank frames;
-- no unintended cuts;
-- no severe camera drift for a locked scene;
-- no unwanted object duplication, disappearance, melting, text, or watermark;
-- temporal motion is continuous;
-- portrait output is intentionally composed, not a blind crop.
+Reject and retry material failures. Never conceal a failed provider result behind a local crossfade.
 
-Reject and retry when a material failure is visible. Do not hide a failed provider result behind a
-local crossfade.
+# Turn the real video into application motion
 
-# Turn provider video into application motion
-
-Use `scripts/prepare_motion.py` only after the provider video passes validation.
+Only after validation:
 
 ```bash
 python3 skills/motion-world/scripts/prepare_motion.py \
@@ -288,35 +322,28 @@ python3 skills/motion-world/scripts/prepare_motion.py \
 
 Available outputs:
 
-1. **Scrub video** — short-GOP MP4/WebM whose current time follows progress.
-2. **Frame sequence** — exact random-access frames for native state restoration.
-3. **Sprite atlas** — packed frames for short UI motion.
-4. **Layered assets** — native interpolation for artwork that can be decomposed.
-5. **Playback video** — ordinary autoplay/loop when direct scrubbing is unnecessary.
-6. **Posters/checkpoints** — reduced-motion, loading, and failure fallback.
+1. scrub video;
+2. frame sequence;
+3. sprite atlas;
+4. layered native assets;
+5. ordinary playback video;
+6. posters/checkpoints.
 
 ## Choose output automatically
 
-- Long cinematic web/scroll movement: scrub video.
-- Exact timer/counter states: frame sequence or layered native assets.
-- Short icon/component animation: sprite atlas.
-- Low-memory target: sparse checkpoints or scrub video, based on measured cost.
+- Long cinematic web/scroll scene: scrub video.
+- Exact timer/counter state: frames or layered assets.
+- Short component motion: atlas.
+- Low-memory target: measured scrub or sparse checkpoints.
 - Reduced Motion: static checkpoints or sparse crossfades.
 
-Create target-specific distributions. Do not duplicate frames under both `build/frames` and the final
-app bundle, and do not include unused atlases in a frame-sequence target.
+Create target-specific distributions. Do not duplicate frames in `build/` and the final app bundle, and
+do not include unused atlases.
 
-Metadata must distinguish:
-
-- source duration/FPS/frame count;
-- scrub-video FPS;
-- sampled sequence frame count and effective sampling rate;
-- atlas dimensions and decoded texture cost;
-- checksums and actual paths.
+Metadata must distinguish source FPS/frame count, scrub FPS, sampled sequence count/effective rate,
+atlas dimensions/decoded cost, paths, and checksums.
 
 # Runtime adapters
-
-Generate selected target folders:
 
 ```bash
 python3 skills/motion-world/scripts/install_runtime_adapters.py motion-project.json
@@ -330,7 +357,7 @@ Supported targets:
 - React Native;
 - Web.
 
-Every adapter exposes the equivalent of:
+Each adapter must expose the equivalent of:
 
 ```text
 setProgress(value: 0...1)
@@ -338,15 +365,9 @@ setActive(active)
 setReducedMotion(enabled)
 ```
 
-It must:
-
-- clamp invalid values;
-- coalesce seeks;
-- avoid duplicate business timers;
-- restore the correct arbitrary state;
-- recover from foreground/background changes;
-- remain usable offline after packaging;
-- preload/cache nearby frames rather than decoding the same file repeatedly on the main thread.
+It must clamp values, coalesce seeks, avoid duplicate business timers, restore arbitrary state,
+recover after foreground/background transitions, work offline after packaging, and cache/preload
+nearby frames rather than decoding the same files repeatedly on the main thread.
 
 # Quality gates
 
@@ -355,47 +376,45 @@ It must:
 - compatible endpoint/checkpoint geometry;
 - correct transformation type;
 - stable identity, palette, lighting, and camera where required;
-- no visible seam pop, unintended morphing, or text artifacts;
-- first and last provider frames match the intended endpoints.
+- no seam pop, accidental morph, duplicate object, or text artifact;
+- provider first/last frames match intended endpoints.
 
 ## Runtime
 
 - direct access at 0%, 25%, 50%, 75%, and 100%;
 - no blank first display;
-- no stacked seeks during fast scroll/drag;
+- no stacked seeks;
 - state restoration after relaunch/backgrounding;
 - reduced-motion path;
 - measured package and decoded-memory sizes.
 
-## Truthfulness
+## Truthfulness and delivery
 
-- reports and infographics are generated from real metadata, not AI-drawn fake code or invented
-  frame counts;
-- diagnostic previews are labeled diagnostic;
+- reports/infographics come from actual metadata, not AI-drawn fake code or invented counts;
+- diagnostic previews are labeled and directly linked;
 - blocked provider execution is reported as blocked;
-- production-ready is used only after provider validation and integration checks.
+- production-ready is used only after provider validation and integration checks;
+- every returned video is linked directly and named in the report;
+- every manual workflow contains a detailed prompt and official provider links.
 
 # Deliver
 
-For repository work, implement files and run validation. For standalone work, return a complete ZIP.
+For repository work, implement files and run validation. For standalone work, return a complete,
+target-specific ZIP only after the real provider video exists.
 
-The final report should be simple for the user and precise internally. Include:
+The final report must be simple for the user and precise internally. Include:
 
-- approved source images;
-- selected provider/model and why it was eligible;
-- actual provider status and output;
+- approved images and direct links;
+- selected provider/model or manual handoff status;
+- direct link to the real or diagnostic video;
 - validation result;
-- generated target packages;
-- integration files;
+- target packages and integration files;
 - package sizes and performance notes;
-- remaining blocker, if any.
+- one remaining next action, if any.
 
-Do not dump the full provider catalog on a beginner. Show the selected route, the result, and only the
-next action they must perform.
+Do not dump the full provider catalog on a beginner. Show the selected route and only the next action.
 
 # Optional examples
 
-Examples live under `references/examples/` and are never required by the core skill.
-
-- `generic-growth.motion-project.json`
-- `sukun-oasis.motion-project.json`
+- `references/examples/generic-growth.motion-project.json`
+- `references/examples/sukun-oasis.motion-project.json`
