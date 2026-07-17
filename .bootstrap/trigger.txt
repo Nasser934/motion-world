@@ -1,1 +1,1 @@
-Trigger the one-time Motion World public release build — retry with explicit media dependencies.
+Trigger the one-time Motion World public release build — publish source and media without modifying workflow files.
