@@ -1,0 +1,233 @@
+{
+  "catalogVersion": "2026-07-17",
+  "defaultPaidPolicy": "ask",
+  "providers": [
+    {
+      "id": "krea_mcp",
+      "label": "Krea MCP",
+      "access": ["agent"],
+      "automation": "agent",
+      "freeAccess": "probe",
+      "beginnerScore": 10,
+      "qualityScore": 8,
+      "priority": 100,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": "model-dependent",
+        "multiKeyframe": "model-dependent",
+        "portrait": true
+      },
+      "probeRequired": true,
+      "notes": "Default first probe when the user has no preferred service. Select only a model that satisfies the clip requirements and is actually available to the connected account."
+    },
+    {
+      "id": "preferred_user_provider",
+      "label": "User's existing provider",
+      "access": ["agent", "api", "cli", "manual"],
+      "automation": "variable",
+      "freeAccess": "user-balance",
+      "beginnerScore": 9,
+      "qualityScore": 9,
+      "priority": 120,
+      "capabilities": {
+        "imageToVideo": "probe",
+        "firstLastFrame": "probe",
+        "multiKeyframe": "probe",
+        "portrait": "probe"
+      },
+      "probeRequired": true,
+      "notes": "Use the user's existing subscription or credits first when the provider can satisfy the required capabilities."
+    },
+    {
+      "id": "dreamina_manual",
+      "label": "Dreamina / Seedance",
+      "access": ["manual"],
+      "automation": "manual-one-step",
+      "freeAccess": "daily-credits",
+      "beginnerScore": 9,
+      "qualityScore": 9,
+      "priority": 90,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": true,
+        "portrait": true
+      },
+      "probeRequired": false,
+      "notes": "Strong beginner fallback for first/last-frame or multi-frame generation when no connected automatic provider is available."
+    },
+    {
+      "id": "vidu_manual",
+      "label": "Vidu Web",
+      "access": ["manual"],
+      "automation": "manual-one-step",
+      "freeAccess": "trial-daily-bonus",
+      "beginnerScore": 8,
+      "qualityScore": 9,
+      "priority": 88,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": true,
+        "portrait": true,
+        "maxDurationSeconds": 16
+      },
+      "probeRequired": true,
+      "notes": "Good manual fallback. Free credits and off-peak availability must be checked at runtime."
+    },
+    {
+      "id": "minimax_api",
+      "label": "MiniMax Hailuo API",
+      "access": ["api", "mcp"],
+      "automation": "automatic",
+      "freeAccess": "paid",
+      "beginnerScore": 8,
+      "qualityScore": 9,
+      "priority": 84,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": false,
+        "portrait": true,
+        "maxResolution": "1080P",
+        "maxDurationSeconds": 10
+      },
+      "probeRequired": true,
+      "notes": "Reliable low-cost automatic fallback. First/last-frame generation requires MiniMax-Hailuo-02."
+    },
+    {
+      "id": "vidu_api",
+      "label": "Vidu API",
+      "access": ["api"],
+      "automation": "automatic",
+      "freeAccess": "paid",
+      "beginnerScore": 8,
+      "qualityScore": 9,
+      "priority": 86,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": true,
+        "portrait": true,
+        "maxResolution": "1080P",
+        "maxDurationSeconds": 16
+      },
+      "probeRequired": true,
+      "notes": "Strong automatic choice for first/last-frame and multi-frame clips."
+    },
+    {
+      "id": "pixverse_api",
+      "label": "PixVerse API",
+      "access": ["api", "manual"],
+      "automation": "automatic",
+      "freeAccess": "separate-api-balance",
+      "beginnerScore": 7,
+      "qualityScore": 8,
+      "priority": 76,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": true,
+        "portrait": true,
+        "maxResolution": "1080P",
+        "maxDurationSeconds": 15
+      },
+      "probeRequired": true,
+      "notes": "Useful when several checkpoints are required. App credits and API credits may be separate."
+    },
+    {
+      "id": "higgsfield_cli",
+      "label": "Higgsfield",
+      "access": ["cli", "manual"],
+      "automation": "automatic-when-authenticated",
+      "freeAccess": "user-balance",
+      "beginnerScore": 7,
+      "qualityScore": 9,
+      "priority": 78,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": "model-dependent",
+        "multiKeyframe": "model-dependent",
+        "portrait": true
+      },
+      "probeRequired": true,
+      "notes": "Use when the user already has access or explicitly prefers it. Inspect the selected model schema before generation."
+    },
+    {
+      "id": "fal_api",
+      "label": "fal API",
+      "access": ["api"],
+      "automation": "automatic",
+      "freeAccess": "paid",
+      "beginnerScore": 6,
+      "qualityScore": 9,
+      "priority": 70,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": "model-dependent",
+        "multiKeyframe": "model-dependent",
+        "portrait": true
+      },
+      "probeRequired": true,
+      "notes": "Use as a model marketplace or benchmark layer, not as the default free route."
+    },
+    {
+      "id": "wan21_flf2v_local",
+      "label": "Wan 2.1 FLF2V local",
+      "access": ["local"],
+      "automation": "advanced-local",
+      "freeAccess": "local-compute",
+      "beginnerScore": 3,
+      "qualityScore": 8,
+      "priority": 60,
+      "advancedOnly": true,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": false,
+        "portrait": true,
+        "maxResolution": "720P"
+      },
+      "probeRequired": true,
+      "notes": "Use only when the local GPU environment is already suitable. Chinese prompts are preferred for FLF2V."
+    },
+    {
+      "id": "ltx_local",
+      "label": "LTX local",
+      "access": ["local"],
+      "automation": "advanced-local",
+      "freeAccess": "local-compute",
+      "beginnerScore": 4,
+      "qualityScore": 8,
+      "priority": 62,
+      "advancedOnly": true,
+      "capabilities": {
+        "imageToVideo": true,
+        "firstLastFrame": true,
+        "multiKeyframe": true,
+        "portrait": true
+      },
+      "probeRequired": true,
+      "notes": "Useful for multi-keyframe control when a supported local environment already exists."
+    },
+    {
+      "id": "local_diagnostic",
+      "label": "Local diagnostic preview",
+      "access": ["local"],
+      "automation": "automatic",
+      "freeAccess": "free",
+      "beginnerScore": 10,
+      "qualityScore": 1,
+      "priority": 1,
+      "diagnosticOnly": true,
+      "capabilities": {
+        "imageToVideo": false,
+        "firstLastFrame": false,
+        "multiKeyframe": false,
+        "portrait": true
+      },
+      "probeRequired": false,
+      "notes": "Never present interpolation or crossfade as a provider-generated production result."
+    }
+  ]
+}

@@ -14,176 +14,113 @@
     "runtimes"
   ],
   "properties": {
-    "schemaVersion": {
-      "const": "0.2"
-    },
+    "schemaVersion": {"const": "0.2"},
     "project": {
       "type": "object",
-      "required": [
-        "id",
-        "name"
-      ],
+      "required": ["id", "name"],
       "properties": {
-        "id": {
-          "type": "string",
-          "minLength": 1
-        },
-        "name": {
-          "type": "string",
-          "minLength": 1
-        },
-        "description": {
-          "type": "string"
-        },
-        "direction": {
-          "enum": [
-            "ltr",
-            "rtl",
-            "auto"
-          ]
-        },
-        "stylePreamble": {
-          "type": "string"
-        },
-        "license": {
-          "type": "string"
-        }
+        "id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "direction": {"enum": ["ltr", "rtl", "auto"]},
+        "stylePreamble": {"type": "string"},
+        "license": {"type": "string"}
       },
       "additionalProperties": true
+    },
+    "providerPolicy": {
+      "type": "object",
+      "properties": {
+        "selection": {"enum": ["ask-existing-then-auto", "user-selected", "automatic"]},
+        "defaultWhenNoPreference": {"type": "string"},
+        "paidPolicy": {"enum": ["never", "ask", "yes"]},
+        "allowManualFallback": {"type": "boolean"},
+        "allowDiagnosticPreview": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "generationState": {
+      "enum": [
+        "PROVIDER_DISCOVERY",
+        "PROVIDER_AUTH_REQUIRED",
+        "PROVIDER_FREE_BALANCE_AVAILABLE",
+        "PROVIDER_PAID_APPROVAL_REQUIRED",
+        "PROVIDER_MODEL_UNAVAILABLE",
+        "PROVIDER_VIDEO_RECEIVED",
+        "PROVIDER_VIDEO_REJECTED",
+        "DIAGNOSTIC_PREVIEW_ONLY",
+        "PRODUCTION_ASSETS_GENERATED",
+        "INTEGRATION_VERIFIED"
+      ]
     },
     "canvases": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "id",
-          "width",
-          "height"
-        ],
+        "required": ["id", "width", "height"],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "width": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "height": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "safeArea": {
-            "type": "object"
-          }
+          "id": {"type": "string"},
+          "width": {"type": "integer", "minimum": 1},
+          "height": {"type": "integer", "minimum": 1},
+          "safeArea": {"type": "object"}
         },
         "additionalProperties": true
       }
     },
-    "imageProvider": {
-      "$ref": "#/$defs/provider"
-    },
-    "videoProvider": {
-      "$ref": "#/$defs/provider"
-    },
+    "imageProvider": {"$ref": "#/$defs/provider"},
+    "videoProvider": {"$ref": "#/$defs/provider"},
     "clips": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": [
-          "id",
-          "promptFile",
-          "output"
-        ],
+        "required": ["id", "promptFile", "output"],
         "properties": {
-          "id": {
-            "type": "string"
-          },
-          "startImage": {
-            "type": [
-              "string",
-              "null"
+          "id": {"type": "string"},
+          "transformationType": {
+            "enum": [
+              "scene_evolution",
+              "world_transition",
+              "multi_checkpoint",
+              "loop",
+              "camera_flight",
+              "character_action",
+              "custom"
             ]
           },
-          "endImage": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "referenceImages": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "promptFile": {
-            "type": "string"
-          },
-          "canvas": {
-            "type": "string"
-          },
-          "durationSeconds": {
-            "type": "number",
-            "exclusiveMinimum": 0
-          },
-          "model": {
-            "type": "string"
-          },
-          "output": {
-            "type": "string"
-          },
-          "connector": {
-            "type": "boolean"
-          }
+          "startImage": {"type": ["string", "null"]},
+          "endImage": {"type": ["string", "null"]},
+          "referenceImages": {"type": "array", "items": {"type": "string"}},
+          "promptFile": {"type": "string"},
+          "canvas": {"type": "string"},
+          "durationSeconds": {"type": "number", "exclusiveMinimum": 0},
+          "model": {"type": "string"},
+          "output": {"type": "string"},
+          "connector": {"type": "boolean"}
         },
         "additionalProperties": true
       }
     },
     "processing": {
       "type": "object",
-      "required": [
-        "profiles"
-      ],
+      "required": ["profiles"],
       "properties": {
         "profiles": {
           "type": "array",
           "minItems": 1,
-          "items": {
-            "enum": [
-              "scrub",
-              "frames",
-              "atlas",
-              "playback",
-              "posters"
-            ]
-          }
+          "items": {"enum": ["scrub", "frames", "atlas", "playback", "posters"]}
         },
-        "fps": {
-          "type": "number",
-          "exclusiveMinimum": 0
-        },
-        "frameCount": {
-          "type": "integer",
-          "minimum": 2
-        },
-        "scrub": {
-          "type": "object"
-        },
-        "frames": {
-          "type": "object"
-        },
-        "atlas": {
-          "type": "object"
-        }
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "frameCount": {"type": "integer", "minimum": 2},
+        "scrub": {"type": "object"},
+        "frames": {"type": "object"},
+        "atlas": {"type": "object"}
       },
       "additionalProperties": true
     },
     "driver": {
       "type": "object",
-      "required": [
-        "type"
-      ],
+      "required": ["type"],
       "properties": {
         "type": {
           "enum": [
@@ -199,9 +136,7 @@
             "custom"
           ]
         },
-        "config": {
-          "type": "object"
-        }
+        "config": {"type": "object"}
       },
       "additionalProperties": true
     },
@@ -210,73 +145,52 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": [
-          "platform",
-          "mode"
-        ],
+        "required": ["platform", "mode"],
         "properties": {
           "platform": {
-            "enum": [
-              "ios_swiftui",
-              "android_compose",
-              "flutter",
-              "react_native",
-              "web"
-            ]
+            "enum": ["ios_swiftui", "android_compose", "flutter", "react_native", "web"]
           },
           "mode": {
-            "enum": [
-              "scrub_video",
-              "frames",
-              "atlas",
-              "layered",
-              "playback"
-            ]
+            "enum": ["scrub_video", "frames", "atlas", "layered", "playback"]
           },
-          "outputDirectory": {
-            "type": "string"
-          }
+          "outputDirectory": {"type": "string"}
         },
         "additionalProperties": true
       }
     },
-    "reducedMotion": {
-      "type": "object"
-    },
-    "provenance": {
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
-    }
+    "reducedMotion": {"type": "object"},
+    "provenance": {"type": "array", "items": {"type": "object"}}
   },
   "$defs": {
     "provider": {
       "type": "object",
-      "required": [
-        "type"
-      ],
+      "required": ["type"],
       "properties": {
         "type": {
           "enum": [
             "chatgpt_image_gen",
             "codex_image_gen",
             "local",
+            "auto_router",
+            "krea_mcp",
+            "dreamina_manual",
+            "vidu_manual",
+            "vidu_api",
+            "minimax_api",
+            "pixverse_api",
             "higgsfield_cli",
+            "fal_api",
+            "wan21_flf2v_local",
+            "ltx_local",
+            "local_diagnostic",
             "generic_shell",
             "generic_http",
             "manual"
           ]
         },
-        "model": {
-          "type": "string"
-        },
-        "commandTemplate": {
-          "type": "string"
-        },
-        "config": {
-          "type": "object"
-        }
+        "model": {"type": "string"},
+        "commandTemplate": {"type": "string"},
+        "config": {"type": "object"}
       },
       "additionalProperties": true
     }

@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import argparse, json, os, shlex, subprocess, sys, urllib.request
+
+import argparse
+import json
+import shlex
+import subprocess
+import sys
+import urllib.request
 from pathlib import Path
 
 
@@ -9,37 +15,40 @@ def q(value):
 
 
 def higgsfield_command(provider, clip, root: Path):
-    model = clip.get('model') or provider.get('model')
-    if not model: raise ValueError(f'clip {clip.get("id")} has no model')
-    parts = ['higgsfield', 'generate', 'create', model]
-    parts += ['--prompt', f'"$(cat {q(root / clip["promptFile"])})"']
-    if clip.get('startImage'): parts += ['--start-image', q(root / clip['startImage'])]
-    if clip.get('endImage'): parts += ['--end-image', q(root / clip['endImage'])]
-    for ref in clip.get('referenceImages', []): parts += ['--image', q(root / ref)]
-    if clip.get('canvas'):
-        # Canvas id is not necessarily an aspect ratio. Prefer explicit provider config when supplied.
-        ratio = clip.get('aspectRatio') or provider.get('config', {}).get('aspectRatio')
-        if ratio: parts += ['--aspect_ratio', q(ratio)]
-    if clip.get('durationSeconds'): parts += ['--duration', str(clip['durationSeconds'])]
-    parts += ['--wait', '--json']
-    return ' '.join(parts)
+    model = clip.get("model") or provider.get("model")
+    if not model:
+        raise ValueError(f'clip {clip.get("id")} has no model')
+    parts = ["higgsfield", "generate", "create", model]
+    parts += ["--prompt", f'"$(cat {q(root / clip["promptFile"])})"']
+    if clip.get("startImage"):
+        parts += ["--start-image", q(root / clip["startImage"])]
+    if clip.get("endImage"):
+        parts += ["--end-image", q(root / clip["endImage"])]
+    for ref in clip.get("referenceImages", []):
+        parts += ["--image", q(root / ref)]
+    ratio = clip.get("aspectRatio") or provider.get("config", {}).get("aspectRatio")
+    if ratio:
+        parts += ["--aspect_ratio", q(ratio)]
+    if clip.get("durationSeconds"):
+        parts += ["--duration", str(clip["durationSeconds"])]
+    parts += ["--wait", "--json"]
+    return " ".join(parts)
 
 
 def shell_command(provider, clip, root: Path):
-    template = provider.get('commandTemplate')
-    if not template: raise ValueError('generic_shell requires commandTemplate')
+    template = provider.get("commandTemplate")
+    if not template:
+        raise ValueError("generic_shell requires commandTemplate")
     vals = {
-      'prompt_file': str(root / clip['promptFile']),
-      'start_image': str(root / clip['startImage']) if clip.get('startImage') else '',
-      'end_image': str(root / clip['endImage']) if clip.get('endImage') else '',
-      'output': str(root / clip['output']),
-      'duration': clip.get('durationSeconds', ''),
-      'model': clip.get('model') or provider.get('model', ''),
-      'aspect_ratio': clip.get('aspectRatio', provider.get('config', {}).get('aspectRatio', '')),
+        "prompt_file": str(root / clip["promptFile"]),
+        "start_image": str(root / clip["startImage"]) if clip.get("startImage") else "",
+        "end_image": str(root / clip["endImage"]) if clip.get("endImage") else "",
+        "output": str(root / clip["output"]),
+        "duration": clip.get("durationSeconds", ""),
+        "model": clip.get("model") or provider.get("model", ""),
+        "aspect_ratio": clip.get("aspectRatio", provider.get("config", {}).get("aspectRatio", "")),
     }
     return template.format(**vals)
-
-
 
 
 def find_result_url(value):
@@ -59,74 +68,130 @@ def find_result_url(value):
                 return found
     return None
 
+
+def manual_message(ptype: str, clip: dict, root: Path) -> str:
+    labels = {
+        "manual": "your chosen video service",
+        "dreamina_manual": "Dreamina / Seedance",
+        "vidu_manual": "Vidu Web",
+    }
+    label = labels.get(ptype, ptype)
+    return (
+        f"Use {label}: upload {clip.get('startImage')} / {clip.get('endImage')} with prompt "
+        f"{clip['promptFile']}; save the returned MP4 at {root / clip['output']}"
+    )
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('project')
+    ap.add_argument("project")
     g = ap.add_mutually_exclusive_group(required=True)
-    g.add_argument('--plan', action='store_true')
-    g.add_argument('--execute', action='store_true')
+    g.add_argument("--plan", action="store_true")
+    g.add_argument("--execute", action="store_true")
     args = ap.parse_args()
+
     project_path = Path(args.project).resolve()
     root = project_path.parent
-    data = json.loads(project_path.read_text(encoding='utf-8'))
-    provider = data['videoProvider']
-    ptype = provider['type']
+    data = json.loads(project_path.read_text(encoding="utf-8"))
+    provider = data["videoProvider"]
+    ptype = provider["type"]
+
+    if ptype == "auto_router":
+        policy = data.get("providerPolicy", {})
+        flags = []
+        if any(clip.get("endImage") for clip in data["clips"]):
+            flags.append("--first-last")
+        if any(len(clip.get("referenceImages", [])) > 1 for clip in data["clips"]):
+            flags.append("--multi-keyframe")
+        paid = policy.get("paidPolicy", "ask")
+        print("Provider: auto_router")
+        print("Ask the single provider question from references/beginner-workflow.md, probe connected accounts, then run:")
+        print(
+            "python3 skills/motion-world/scripts/route_provider.py "
+            + " ".join(flags)
+            + f" --allow-paid {q(paid)} --json"
+        )
+        print("Write the selected concrete provider back to videoProvider before generation.")
+        if args.execute:
+            raise ValueError("auto_router must resolve to a concrete provider before --execute")
+        return 0
 
     commands = []
-    for clip in data['clips']:
-        if ptype == 'higgsfield_cli':
+    for clip in data["clips"]:
+        if ptype == "higgsfield_cli":
             command = higgsfield_command(provider, clip, root)
-        elif ptype == 'generic_shell':
+        elif ptype == "generic_shell":
             command = shell_command(provider, clip, root)
-        elif ptype in ('manual', 'generic_http'):
+        elif ptype in {
+            "manual",
+            "dreamina_manual",
+            "vidu_manual",
+            "generic_http",
+            "krea_mcp",
+            "vidu_api",
+            "minimax_api",
+            "pixverse_api",
+            "fal_api",
+            "wan21_flf2v_local",
+            "ltx_local",
+            "local_diagnostic",
+        }:
             command = None
         else:
-            raise ValueError(f'unsupported video provider type: {ptype}')
+            raise ValueError(f"unsupported video provider type: {ptype}")
         commands.append((clip, command))
 
-    print(f'Provider: {ptype}')
-    if ptype == 'higgsfield_cli':
-        print('Preflight: higgsfield workspace list')
-        for model in sorted({(c.get('model') or provider.get('model')) for c,_ in commands}):
-            print(f'Preflight: higgsfield model get {model}')
+    print(f"Provider: {ptype}")
+    if ptype == "higgsfield_cli":
+        print("Preflight: higgsfield workspace list")
+        for model in sorted({(c.get("model") or provider.get("model")) for c, _ in commands}):
+            print(f"Preflight: higgsfield model get {model}")
+
     for clip, command in commands:
         print(f'\n[{clip["id"]}] -> {root / clip["output"]}')
         if command:
             print(command)
-        elif ptype == 'manual':
-            print(f'Upload {clip.get("startImage")} / {clip.get("endImage")} using prompt {clip["promptFile"]}; save result at {clip["output"]}')
-        else:
-            print('generic_http requires explicit endpoint/auth/upload/poll/download mapping; create a provider-specific shell wrapper or use manual mode.')
+        elif ptype in {"manual", "dreamina_manual", "vidu_manual"}:
+            print(manual_message(ptype, clip, root))
+        elif ptype == "krea_mcp":
+            print("Use the connected Krea MCP tool after probing the available model and account balance; save the real result at the output path above.")
+        elif ptype in {"vidu_api", "minimax_api", "pixverse_api", "fal_api", "generic_http"}:
+            print("This provider requires its authenticated API/MCP adapter or an explicit generic_shell wrapper before execution.")
+        elif ptype in {"wan21_flf2v_local", "ltx_local"}:
+            print("Run only after a compatible local GPU environment has been detected and the official model workflow is installed.")
+        elif ptype == "local_diagnostic":
+            print("Diagnostic preview only. Never label this output as provider-generated or production-ready.")
 
     if args.execute:
-        if ptype not in ('higgsfield_cli','generic_shell'):
-            raise ValueError(f'--execute is not supported for {ptype} without an explicit wrapper')
+        if ptype not in ("higgsfield_cli", "generic_shell"):
+            raise ValueError(f"--execute is not supported for {ptype} without its authenticated adapter")
         for clip, command in commands:
-            out = root / clip['output']
+            out = root / clip["output"]
             out.parent.mkdir(parents=True, exist_ok=True)
             print(f'Executing {clip["id"]}...', flush=True)
-            if ptype == 'higgsfield_cli':
+            if ptype == "higgsfield_cli":
                 completed = subprocess.run(command, shell=True, cwd=root, check=True, text=True, capture_output=True)
-                job_json = out.with_suffix(out.suffix + '.provider.json')
-                job_json.write_text(completed.stdout, encoding='utf-8')
+                job_json = out.with_suffix(out.suffix + ".provider.json")
+                job_json.write_text(completed.stdout, encoding="utf-8")
                 try:
                     payload = json.loads(completed.stdout)
                 except json.JSONDecodeError as exc:
-                    raise RuntimeError(f'Higgsfield returned non-JSON output; saved at {job_json}') from exc
+                    raise RuntimeError(f"Higgsfield returned non-JSON output; saved at {job_json}") from exc
                 result_url = find_result_url(payload)
                 if not result_url:
-                    raise RuntimeError(f'No result URL found in Higgsfield output; inspect {job_json}')
-                print(f'Downloading result -> {out}', flush=True)
+                    raise RuntimeError(f"No result URL found in Higgsfield output; inspect {job_json}")
+                print(f"Downloading result -> {out}", flush=True)
                 urllib.request.urlretrieve(result_url, out)
             else:
                 subprocess.run(command, shell=True, cwd=root, check=True)
                 if not out.exists():
-                    raise RuntimeError(f'generic_shell completed but output is missing: {out}')
+                    raise RuntimeError(f"generic_shell completed but output is missing: {out}")
     return 0
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as exc:
-        print(f'ERROR: {exc}', file=sys.stderr)
+        print(f"ERROR: {exc}", file=sys.stderr)
         raise SystemExit(1)
