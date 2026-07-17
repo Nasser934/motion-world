@@ -1,1 +1,1 @@
-Trigger the one-time Motion World public release build — publish the verified output through generated-release.
+Trigger the one-time Motion World public release build — deterministic generated-release commit.
