@@ -6,6 +6,10 @@ on:
     paths:
       - ".bootstrap/**"
       - ".github/workflows/bootstrap.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - ".bootstrap/**"
   workflow_dispatch:
 
 permissions:
@@ -17,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Restore repository source
@@ -67,4 +72,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Publish Motion World 0.3.0" || exit 0
-          git push
+          git push origin HEAD:main
