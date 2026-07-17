@@ -1,1 +1,1 @@
-Trigger the one-time Motion World public release build — publish source and media without modifying workflow files.
+Trigger the one-time Motion World public release build — publish the verified output through generated-release.
