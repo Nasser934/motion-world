@@ -71,12 +71,13 @@ jobs:
       - name: Verify repository
         run: bash scripts/verify.sh
 
-      - name: Commit public release
+      - name: Publish generated release branch
         shell: bash
         run: |
           set -euxo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B generated-release
           git add -A
           git commit -m "Publish Motion World 0.3.0" || exit 0
-          git push origin HEAD:main
+          git push --force origin HEAD:generated-release
