@@ -1,1 +1,1 @@
-Trigger the one-time Motion World public release build.
+Trigger the one-time Motion World public release build — retry with explicit media dependencies.
