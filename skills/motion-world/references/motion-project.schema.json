@@ -3,16 +3,7 @@
   "$id": "https://example.local/motion-project.schema.json",
   "title": "motion-world project",
   "type": "object",
-  "required": [
-    "schemaVersion",
-    "project",
-    "imageProvider",
-    "videoProvider",
-    "clips",
-    "processing",
-    "driver",
-    "runtimes"
-  ],
+  "required": ["schemaVersion", "project", "imageProvider", "videoProvider", "clips", "processing", "driver", "runtimes"],
   "properties": {
     "schemaVersion": {"const": "0.2"},
     "project": {
@@ -46,6 +37,7 @@
         "PROVIDER_FREE_BALANCE_AVAILABLE",
         "PROVIDER_PAID_APPROVAL_REQUIRED",
         "PROVIDER_MODEL_UNAVAILABLE",
+        "MANUAL_PROVIDER_REQUIRED",
         "PROVIDER_VIDEO_RECEIVED",
         "PROVIDER_VIDEO_REJECTED",
         "DIAGNOSTIC_PREVIEW_ONLY",
@@ -78,21 +70,14 @@
         "properties": {
           "id": {"type": "string"},
           "transformationType": {
-            "enum": [
-              "scene_evolution",
-              "world_transition",
-              "multi_checkpoint",
-              "loop",
-              "camera_flight",
-              "character_action",
-              "custom"
-            ]
+            "enum": ["scene_evolution", "world_transition", "multi_checkpoint", "loop", "camera_flight", "character_action", "custom"]
           },
           "startImage": {"type": ["string", "null"]},
           "endImage": {"type": ["string", "null"]},
           "referenceImages": {"type": "array", "items": {"type": "string"}},
           "promptFile": {"type": "string"},
           "canvas": {"type": "string"},
+          "aspectRatio": {"type": "string"},
           "durationSeconds": {"type": "number", "exclusiveMinimum": 0},
           "model": {"type": "string"},
           "output": {"type": "string"},
@@ -122,20 +107,7 @@
       "type": "object",
       "required": ["type"],
       "properties": {
-        "type": {
-          "enum": [
-            "elapsed_time",
-            "countdown",
-            "count",
-            "scroll",
-            "drag",
-            "sensor",
-            "state_machine",
-            "audio",
-            "network",
-            "custom"
-          ]
-        },
+        "type": {"enum": ["elapsed_time", "countdown", "count", "scroll", "drag", "sensor", "state_machine", "audio", "network", "custom"]},
         "config": {"type": "object"}
       },
       "additionalProperties": true
@@ -147,12 +119,8 @@
         "type": "object",
         "required": ["platform", "mode"],
         "properties": {
-          "platform": {
-            "enum": ["ios_swiftui", "android_compose", "flutter", "react_native", "web"]
-          },
-          "mode": {
-            "enum": ["scrub_video", "frames", "atlas", "layered", "playback"]
-          },
+          "platform": {"enum": ["ios_swiftui", "android_compose", "flutter", "react_native", "web"]},
+          "mode": {"enum": ["scrub_video", "frames", "atlas", "layered", "playback"]},
           "outputDirectory": {"type": "string"}
         },
         "additionalProperties": true
@@ -173,6 +141,7 @@
             "local",
             "auto_router",
             "krea_mcp",
+            "krea_manual",
             "dreamina_manual",
             "vidu_manual",
             "vidu_api",
