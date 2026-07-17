@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.0 — 2026-07-17
+
+- Added a beginner-first provider question and automatic capability-based routing.
+- Uses the user's existing subscription or preferred provider first when it can satisfy the clip.
+- Probes Krea MCP first when no provider is preferred, without assuming that every model is available or free.
+- Added routing references for Dreamina, Vidu, MiniMax Hailuo, PixVerse, fal, Wan 2.1 FLF2V, and LTX.
+- Added an explicit paid-approval policy and diagnostic-versus-production generation states.
+- Added strong endpoint alignment, transformation-type, and real provider-video validation rules.
+- Removed the intended-usage-category question from the user workflow.
+- Added a deterministic no-spend provider router and repository tests for the beginner default.
+
 ## 0.3.0 — 2026-07-17
 
 - Rebuilt the root README as a full product and integration guide.
